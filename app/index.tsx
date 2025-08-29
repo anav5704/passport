@@ -23,7 +23,7 @@ export default function Index() {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Welcome, {user.name || 'User'}!</Text>
-            <Text style={styles.subText}>PASS Attendance Tracker</Text>
+            <Text style={styles.subText}>PASSport</Text>
 
             <View style={styles.coursesContainer}>
                 <Text style={styles.coursesTitle}>Your Course:</Text>
