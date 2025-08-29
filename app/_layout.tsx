@@ -4,8 +4,30 @@ import { StyleSheet, Text, View } from 'react-native'
 import migrations from '@drizzle/migrations'
 import { StatusBar } from 'expo-status-bar'
 import 'react-native-gesture-handler'
-import { Slot } from 'expo-router'
+import { Slot, useRouter, useSegments } from 'expo-router'
 import { db } from '@database'
+import { UserProvider, useUser } from '@/contexts'
+import { useEffect } from 'react'
+
+function RootLayoutNav() {
+    const { user, isLoading, isOnboardingComplete } = useUser()
+    const segments = useSegments()
+    const router = useRouter()
+
+    useEffect(() => {
+        if (isLoading) return
+
+        const inOnboarding = segments[0] === 'onboarding'
+
+        if (!isOnboardingComplete && !inOnboarding) {
+            router.replace('/onboarding')
+        } else if (isOnboardingComplete && inOnboarding) {
+            router.replace('/')
+        }
+    }, [isOnboardingComplete, isLoading, segments])
+
+    return <Slot />
+}
 
 export default function RootLayout() {
     const { success, error } = useMigrations(db, migrations)
@@ -29,10 +51,12 @@ export default function RootLayout() {
     }
 
     return (
-        <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-            <Slot />
-            <StatusBar style="auto" />
-        </SafeAreaView>
+        <UserProvider>
+            <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+                <RootLayoutNav />
+                <StatusBar style="auto" />
+            </SafeAreaView>
+        </UserProvider>
     )
 }
 
