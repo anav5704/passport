@@ -1,112 +1,106 @@
-# Product Requirements Document (PRD)
-## PASS Attendance Tracker
+# Product Requirements Document 
 
-### **Project Overview**
-A mobile attendance tracking application that uses barcode/QR code scanning to record student attendance for courses. The app enables course leaders to efficiently manage attendance data and export reports.
+Application name: PASSport
+Platforms: Android
+Version: 4
 
-### **Target Users**
-- **Primary**: Course leaders/instructors
-- **Secondary**: Educational administrators
+## Overview
 
-### **Core Value Proposition**
-Streamline attendance tracking from manual paper-based systems to automated digital scanning, reducing time spent on administrative tasks by 90%.
+What is PASS?
 
-### **Key Features**
-1. **Course Management**: Create and manage multiple courses
-2. **Student Registration**: Register students with ID, name, and sponsor information
-3. **Barcode Scanning**: Scan student ID cards for instant attendance logging
-4. **Attendance Records**: View and manage attendance history per course
-5. **Data Export**: Export attendance data to Excel/CSV formats
-6. **Offline Support**: Work without internet connectivity
+The Peer Assisted Study Sessions (PASS) program is a student support initiative where trained senior students (PASS Leaders) facilitate group study sessions for students enrolled in challenging courses.
 
-### **Application Screens & Functionality**
+What do PASS Leaders do?
 
-#### **1. Home Screen**
-- **Purpose**: Main dashboard and course selection
-- **Components**:
-  - List of all created courses (course code + leader name)
-  - "Create New Course" button
-  - Course selection for attendance tracking
-- **Actions**:
-  - Navigate to course creation
-  - Select course for attendance tracking
-  - View course details
+- Run study sessions for their assigned course(s).
+- Take attendance of participants each week.
+- Submit attendance data to the PASS Coordinator.
 
-#### **2. Create Course Screen**
-- **Purpose**: Add new courses to the system
-- **Components**:
-  - Course code input field (required, unique)
-  - Leader name input field (required)
-  - Save/Cancel buttons
-- **Actions**:
-  - Validate course code uniqueness
-  - Save course data
-  - Return to home screen
+What will this app do for them?
 
-#### **3. Course Detail Screen**
-- **Purpose**: View and manage specific course attendance
-- **Components**:
-  - Course information header (code + leader)
-  - Attendance history list (newest first)
-  - "Scan Attendance" button
-  - "Export Data" button
-  - Search/filter options
-- **Actions**:
-  - Navigate to scanning screen
-  - Export attendance data
-  - Filter attendance records
+- Allow leaders to quickly and accurately record attendance using barcode scanning.
+- Store all attendance data offline for reliability (no internet required in sessions).
+- Provide an easy way to manage courses and export attendance for submission.
+- Simplify workflows (minimal screens, intuitive UI, fast feedback).
 
-#### **4. Scan Screen**
-- **Purpose**: Barcode scanning for attendance recording
-- **Components**:
-  - Camera preview with scanning overlay
-  - Scan feedback indicators
-  - Manual entry option
-  - Current course display
-  - Scan confirmation messages
-- **Actions**:
-  - Scan student ID barcodes/QR codes
-  - Process and validate scanned data
-  - Manual student ID entry fallback
-  - Navigate to save attendance screen
+## Screens
 
-#### **5. Save Attendance Screen**
-- **Purpose**: Confirm and save attendance record
-- **Components**:
-  - Student information display (ID, name, sponsor)
-  - Course information
-  - Timestamp
-  - Save/Cancel buttons
-  - Edit student details option
-- **Actions**:
-  - Confirm attendance recording
-  - Edit student information if needed
-  - Save to database
-  - Return to scanning or course screen
+### 1. Onboarding Screen
 
-### **Data Models**
+- Welcome Message & Image
 
-#### **Course**
-- `courseCode`: string (primary key)
-- `leaderName`: string
+- Registration Form
 
-#### **Student**
-- `studentId`: string (primary key)
-- `studentName`: string
-- `sponsor`: string
+    - Leader name
+    - Course code(s)
 
-#### **Attendance**
-- `id`: integer (auto-increment)
-- `studentId`: string
-- `studentName`: string
-- `sponsor`: string
-- `datetime`: string (ISO format)
-- `courseCode`: string
-- `leaderName`: string
+### 2. Course Screen (Main Page)
 
-### **Technical Constraints**
-- Must work on mobile devices (iOS/Android)
-- Offline-first architecture required
-- Camera access for barcode scanning
-- Local data storage with export capabilities
-- Cross-platform compatibility
+- Header
+
+    - Avatar icon (tap → user settings bottom sheet)
+    - Course title (tap → switch course bottom sheet)
+    - 3-dot menu (tap → course management bottom sheet)
+
+- Scanner Area (top 1/4 screen)
+
+    - Always active rectangle barcode scanner
+    - Scan flow: Student ID → Signature → Record attendance
+
+- Attendance History (remaining 3/4 screen)
+
+    - List of attendance entries (student Id, timestamp)
+    - Empty state: “No attendance yet.”
+
+## Bottom Sheets
+
+### Course Switcher
+
+- Shows leader’s courses
+- Tap → switch active course
+- Crate course
+
+### Course Management (3-dot menu)
+
+- Export attendance
+- Edit course
+- Delete course
+
+### User Settings (Avatar)
+
+- Edit leader name
+
+## Technology Stack
+
+Framework: React Native (Expo)
+Navigation: Expo Router (file based routing)
+UI Components: Custom + @gorhom/react-native-bottom-sheet
+Barcode Scanner: Expo Camera
+Database: Expo SQLite + Drizzle ORM
+Data Export: xlsx 
+Distribution : Expo EAS
+
+## Database Schema
+
+User 
+    - id     INTEGER PRIMARY KEY AUTOINCREMENT
+    - name        TEXT NOT NULL
+
+Course 
+    - id   INTEGER PRIMARY KEY AUTOINCREMENT
+    - code        TEXT NOT NULL
+    - leader_id   INTEGER NOT NULL
+    - FOREIGN KEY (leader_id) REFERENCES User(id)
+
+Student 
+    - id   INTEGER PRIMARY KEY AUTOINCREMENT
+    - student_id TEXT NOT NULL,
+    - student_signature TEXT NOT NULL,
+
+Attendance 
+    - attendance_id  INTEGER PRIMARY KEY AUTOINCREMENT
+    - student_id     INTEGER NOT NULL
+    - course_id      INTEGER NOT NULL
+    - timestamp      DATETIME DEFAULT CURRENT_TIMESTAMP
+    - FOREIGN KEY (student_id) REFERENCES Student(id)
+    - FOREIGN KEY (course_id) REFERENCES Course(id)
