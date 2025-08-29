@@ -1,28 +1,31 @@
 {
-  "name": "pass-attendance-tracker",
-  "version": "1.0.0",
-  "main": "index.ts",
-  "scripts": {
-    "start": "expo start",
-    "android": "expo run:android",
-    "ios": "expo run:ios",
-    "web": "expo start --web"
-  },
-  "dependencies": {
-    "babel-plugin-inline-import": "^3.0.0",
-    "drizzle-orm": "^0.44.4",
-    "expo": "~53.0.20",
-    "expo-drizzle-studio-plugin": "^0.2.0",
-    "expo-sqlite": "~15.2.14",
-    "expo-status-bar": "~2.2.3",
-    "react": "19.0.0",
-    "react-native": "0.79.5"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.25.2",
-    "@types/react": "~19.0.10",
-    "drizzle-kit": "^0.31.4",
-    "typescript": "~5.8.3"
-  },
-  "private": true
+    "name": "pass-attendance-tracker",
+    "version": "1.0.0",
+    "main": "expo-router/entry",
+    "scripts": {
+        "start": "expo start",
+        "android": "expo run:android",
+        "ios": "expo run:ios",
+        "web": "expo start --web"
+    },
+    "dependencies": {
+        "babel-plugin-inline-import": "^3.0.0",
+        "drizzle-orm": "^0.44.4",
+        "expo": "~53.0.20",
+        "expo-drizzle-studio-plugin": "^0.2.0",
+        "expo-sqlite": "~15.2.14",
+        "expo-status-bar": "~2.2.3",
+        "react": "19.0.0",
+        "react-native": "0.79.5",
+        "expo-router": "~5.1.5",
+        "react-native-safe-area-context": "5.4.0",
+        "react-native-gesture-handler": "~2.24.0"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.25.2",
+        "@types/react": "~19.0.10",
+        "drizzle-kit": "^0.31.4",
+        "typescript": "~5.8.3"
+    },
+    "private": true
 }
