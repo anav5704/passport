@@ -1,6 +1,7 @@
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { StyleSheet, Text, View } from 'react-native'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import migrations from '@drizzle/migrations'
 import { StatusBar } from 'expo-status-bar'
 import 'react-native-gesture-handler'
@@ -34,29 +35,31 @@ export default function RootLayout() {
 
     if (error) {
         return (
-            <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+            <SafeAreaView style={styles.container} edges={['bottom']}>
                 <Text style={styles.errorText}>Migration error: {error.message}</Text>
-                <StatusBar style="auto" />
+                <StatusBar style="dark" />
             </SafeAreaView>
         )
     }
 
     if (!success) {
         return (
-            <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+            <SafeAreaView style={styles.container} edges={['bottom']}>
                 <Text style={styles.loadingText}>Migration is in progress...</Text>
-                <StatusBar style="auto" />
+                <StatusBar style="dark" />
             </SafeAreaView>
         )
     }
 
     return (
-        <UserProvider>
-            <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-                <RootLayoutNav />
-                <StatusBar style="auto" />
-            </SafeAreaView>
-        </UserProvider>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+            <UserProvider>
+                <SafeAreaView style={styles.container} edges={['bottom']}>
+                    <RootLayoutNav />
+                    <StatusBar style="dark" />
+                </SafeAreaView>
+            </UserProvider>
+        </GestureHandlerRootView>
     )
 }
 
