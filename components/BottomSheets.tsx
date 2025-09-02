@@ -25,9 +25,9 @@ const BottomSheets = forwardRef<BottomSheetsRef, BottomSheetsProps>(
         const courseManagementSheetRef = useRef<BottomSheet>(null)
 
         // Bottom sheet snap points
-        const userSettingsSnapPoints = useMemo(() => ['25%'], [])
-        const courseSwitcherSnapPoints = useMemo(() => ['30%'], [])
-        const courseManagementSnapPoints = useMemo(() => ['25%'], [])
+        const userSettingsSnapPoints = useMemo(() => ['20%'], [])
+        const courseSwitcherSnapPoints = useMemo(() => ['20%'], [])
+        const courseManagementSnapPoints = useMemo(() => ['20%'], [])
 
         // Close other sheets when one opens
         const closeOtherSheets = (currentSheet: string) => {
@@ -170,7 +170,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingTop: 10,
         backgroundColor: '#fff',
-        minHeight: 200,
     },
     bottomSheetTitle: {
         fontSize: 20,
@@ -184,8 +183,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingVertical: 20,
         paddingHorizontal: 16,
-        borderBottomWidth: 1,
-        borderBottomColor: '#F2F2F7',
     },
     bottomSheetItemText: {
         fontSize: 16,
