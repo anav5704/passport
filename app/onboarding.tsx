@@ -67,8 +67,8 @@ export default function OnboardingScreen() {
     }
 
     return (
-        <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-            <StatusBar style="dark" />
+        <SafeAreaView style={styles.container} edges={[]}>
+            <StatusBar style="dark" translucent backgroundColor="transparent" />
             <KeyboardAvoidingView
                 style={styles.container}
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}

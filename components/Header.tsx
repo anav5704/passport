@@ -1,6 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View, Pressable, Platform, StatusBar } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useUser } from '@/contexts'
 
 interface HeaderProps {
@@ -17,6 +18,7 @@ export default function Header({
     onMenuPress
 }: HeaderProps) {
     const { user } = useUser()
+    const insets = useSafeAreaInsets()
 
     // Get first letter of first name for avatar
     const getFirstLetter = (name: string) => {
@@ -24,7 +26,7 @@ export default function Header({
     }
 
     return (
-        <View style={styles.header}>
+        <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
             {/* Avatar */}
             <Pressable style={styles.avatar} onPress={onAvatarPress}>
                 <Text style={styles.avatarText}>
@@ -54,7 +56,6 @@ const styles = StyleSheet.create({
         paddingLeft: 20,
         paddingRight: 20,
         paddingVertical: 16,
-        paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight || 0) + 16 : 16,
         backgroundColor: '#fff',
     },
     avatar: {

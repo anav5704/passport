@@ -2,6 +2,7 @@ import React, { useRef, useMemo, useCallback, forwardRef, useImperativeHandle } 
 import { StyleSheet, Text, View, Pressable } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import BottomSheet, { BottomSheetView, BottomSheetBackdrop } from '@gorhom/bottom-sheet'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useUser } from '@/contexts'
 
 interface BottomSheetsProps {
@@ -18,16 +19,12 @@ export interface BottomSheetsRef {
 const BottomSheets = forwardRef<BottomSheetsRef, BottomSheetsProps>(
     ({ currentCourse, onCourseSwitch }, ref) => {
         const { user } = useUser()
+        const insets = useSafeAreaInsets()
 
         // Bottom sheet refs
         const userSettingsSheetRef = useRef<BottomSheet>(null)
         const courseSwitcherSheetRef = useRef<BottomSheet>(null)
         const courseManagementSheetRef = useRef<BottomSheet>(null)
-
-        // Bottom sheet snap points
-        const userSettingsSnapPoints = useMemo(() => ['20%'], [])
-        const courseSwitcherSnapPoints = useMemo(() => ['20%'], [])
-        const courseManagementSnapPoints = useMemo(() => ['20%'], [])
 
         // Close other sheets when one opens
         const closeOtherSheets = (currentSheet: string) => {
@@ -76,15 +73,15 @@ const BottomSheets = forwardRef<BottomSheetsRef, BottomSheetsProps>(
                 <BottomSheet
                     ref={userSettingsSheetRef}
                     index={-1}
-                    snapPoints={userSettingsSnapPoints}
+                    enableDynamicSizing
                     enablePanDownToClose
                     backdropComponent={renderBackdrop}
                     backgroundStyle={styles.bottomSheetBackground}
                     style={styles.bottomSheetContainer}
                     handleIndicatorStyle={{ display: 'none' }}
                 >
-                    <BottomSheetView style={styles.bottomSheetContent}>
-                        <Text style={styles.bottomSheetTitle}>App Settings</Text>
+                    <BottomSheetView style={[styles.bottomSheetContent, { paddingBottom: insets.bottom }]}>
+                        <Text style={styles.bottomSheetTitle}>General Settings</Text>
                         <Pressable style={styles.bottomSheetItem}>
                             <Text style={styles.bottomSheetItemText}>Edit Name</Text>
                         </Pressable>
@@ -98,14 +95,14 @@ const BottomSheets = forwardRef<BottomSheetsRef, BottomSheetsProps>(
                 <BottomSheet
                     ref={courseSwitcherSheetRef}
                     index={-1}
-                    snapPoints={courseSwitcherSnapPoints}
+                    enableDynamicSizing
                     enablePanDownToClose
                     backdropComponent={renderBackdrop}
                     backgroundStyle={styles.bottomSheetBackground}
                     style={styles.bottomSheetContainer}
                     handleIndicatorStyle={{ display: 'none' }}
                 >
-                    <BottomSheetView style={styles.bottomSheetContent}>
+                    <BottomSheetView style={[styles.bottomSheetContent, { paddingBottom: insets.bottom }]}>
                         <Text style={styles.bottomSheetTitle}>Switch Course</Text>
                         {user?.courses?.map((course) => (
                             <Pressable
@@ -129,18 +126,18 @@ const BottomSheets = forwardRef<BottomSheetsRef, BottomSheetsProps>(
                     </BottomSheetView>
                 </BottomSheet>
 
-                {/* Course Management Bottom Sheet */}
+                {/* Course Settings Bottom Sheet */}
                 <BottomSheet
                     ref={courseManagementSheetRef}
                     index={-1}
-                    snapPoints={courseManagementSnapPoints}
+                    enableDynamicSizing
                     enablePanDownToClose
                     backdropComponent={renderBackdrop}
                     backgroundStyle={styles.bottomSheetBackground}
                     style={styles.bottomSheetContainer}
                     handleIndicatorStyle={{ display: 'none' }}
                 >
-                    <BottomSheetView style={styles.bottomSheetContent}>
+                    <BottomSheetView style={[styles.bottomSheetContent, { paddingBottom: insets.bottom }]}>
                         <Text style={styles.bottomSheetTitle}>Course Settings</Text>
                         <Pressable style={styles.bottomSheetItem}>
                             <Text style={styles.bottomSheetItemText}>Export Attendance</Text>

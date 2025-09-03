@@ -35,18 +35,18 @@ export default function RootLayout() {
 
     if (error) {
         return (
-            <SafeAreaView style={styles.container} edges={['bottom']}>
+            <SafeAreaView style={styles.container} edges={[]}>
                 <Text style={styles.errorText}>Migration error: {error.message}</Text>
-                <StatusBar style="dark" />
+                <StatusBar style="dark" translucent backgroundColor="transparent" />
             </SafeAreaView>
         )
     }
 
     if (!success) {
         return (
-            <SafeAreaView style={styles.container} edges={['bottom']}>
+            <SafeAreaView style={styles.container} edges={[]}>
                 <Text style={styles.loadingText}>Migration is in progress...</Text>
-                <StatusBar style="dark" />
+                <StatusBar style="dark" translucent backgroundColor="transparent" />
             </SafeAreaView>
         )
     }
@@ -54,9 +54,9 @@ export default function RootLayout() {
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
             <UserProvider>
-                <SafeAreaView style={styles.container} edges={['bottom']}>
+                <SafeAreaView style={styles.container} edges={[]}>
                     <RootLayoutNav />
-                    <StatusBar style="dark" />
+                    <StatusBar style="dark" translucent backgroundColor="transparent" />
                 </SafeAreaView>
             </UserProvider>
         </GestureHandlerRootView>
