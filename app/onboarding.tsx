@@ -13,7 +13,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { setupUserWithCourse } from '@database/queries'
 import { StatusBar } from 'expo-status-bar'
-import { useUser } from '@/contexts'
+import { useUser } from '@/contexts/UserContext'
 import { router } from 'expo-router'
 
 export default function OnboardingScreen() {
@@ -68,7 +68,7 @@ export default function OnboardingScreen() {
 
     return (
         <SafeAreaView style={styles.container} edges={[]}>
-            <StatusBar style="dark" translucent backgroundColor="transparent" />
+            <StatusBar style="dark" translucent />
             <KeyboardAvoidingView
                 style={styles.container}
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}

@@ -7,7 +7,10 @@ import { StatusBar } from 'expo-status-bar'
 import 'react-native-gesture-handler'
 import { Slot, useRouter, useSegments } from 'expo-router'
 import { db } from '@database'
-import { UserProvider, useUser } from '@/contexts'
+import { UserProvider } from '@/contexts/UserContext'
+import { CourseProvider } from '@/contexts/CourseContext'
+import { SheetProvider } from '@/contexts/SheetContext'
+import { useUser } from '@/contexts/UserContext'
 import { useEffect } from 'react'
 
 function RootLayoutNav() {
@@ -37,7 +40,7 @@ export default function RootLayout() {
         return (
             <SafeAreaView style={styles.container} edges={[]}>
                 <Text style={styles.errorText}>Migration error: {error.message}</Text>
-                <StatusBar style="dark" translucent backgroundColor="transparent" />
+                <StatusBar style="dark" translucent />
             </SafeAreaView>
         )
     }
@@ -46,7 +49,7 @@ export default function RootLayout() {
         return (
             <SafeAreaView style={styles.container} edges={[]}>
                 <Text style={styles.loadingText}>Migration is in progress...</Text>
-                <StatusBar style="dark" translucent backgroundColor="transparent" />
+                <StatusBar style="dark" translucent />
             </SafeAreaView>
         )
     }
@@ -54,10 +57,14 @@ export default function RootLayout() {
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
             <UserProvider>
-                <SafeAreaView style={styles.container} edges={[]}>
-                    <RootLayoutNav />
-                    <StatusBar style="dark" translucent backgroundColor="transparent" />
-                </SafeAreaView>
+                <CourseProvider>
+                    <SheetProvider>
+                        <SafeAreaView style={styles.container} edges={[]}>
+                            <RootLayoutNav />
+                            <StatusBar style="dark" translucent />
+                        </SafeAreaView>
+                    </SheetProvider>
+                </CourseProvider>
             </UserProvider>
         </GestureHandlerRootView>
     )

@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, Text, View, Pressable, Platform, StatusBar } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { useUser } from '@/contexts'
+import { useUser } from '@/contexts/UserContext'
 
 interface HeaderProps {
     currentCourse?: { id: number; code: string }

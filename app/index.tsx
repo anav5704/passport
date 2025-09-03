@@ -1,37 +1,36 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { StyleSheet, Text, View, Pressable } from 'react-native'
-import { useUser } from '@/contexts'
-import { Header, BottomSheets, BottomSheetsRef } from '@/components'
+import React from 'react'
+import { StyleSheet, Text, View } from 'react-native'
+import { useUser } from '@/contexts/UserContext'
+import { useCourse } from '@/contexts/CourseContext'
+import { useSheet } from '@/contexts/SheetContext'
+import Header from '@/components/Header'
+import GeneralSettingsSheet from '@/components/sheets/GeneralSettingsSheet'
+import CourseSwitcherSheet from '@/components/sheets/CourseSwitcherSheet'
+import CourseSettingsSheet from '@/components/sheets/CourseSettingsSheet'
 
 export default function Index() {
     const { user, isLoading } = useUser()
-    const [currentCourse, setCurrentCourse] = useState<{ id: number; code: string } | undefined>()
-    const bottomSheetsRef = useRef<BottomSheetsRef>(null)
-
-    // Set the first course as default when user loads
-    useEffect(() => {
-        if (user?.courses && user.courses.length > 0 && !currentCourse) {
-            setCurrentCourse(user.courses[0])
-        }
-    }, [user, currentCourse])
-
-    const handleCourseSwitch = (courseId: number) => {
-        const course = user?.courses?.find(c => c.id === courseId)
-        if (course) {
-            setCurrentCourse(course)
-        }
-    }
+    const { currentCourse } = useCourse()
+    const {
+        generalSettingsRef,
+        courseSwitcherRef,
+        courseSettingsRef,
+        openGeneralSettings,
+        openCourseSwitcher,
+        openCourseSettings,
+        closeAllSheets
+    } = useSheet()
 
     const handleAvatarPress = () => {
-        bottomSheetsRef.current?.openAppSettings()
+        openGeneralSettings()
     }
 
     const handleCourseTitlePress = () => {
-        bottomSheetsRef.current?.openCourseSwitcher()
+        openCourseSwitcher()
     }
 
     const handleMenuPress = () => {
-        bottomSheetsRef.current?.openCourseSettings()
+        openCourseSettings()
     }
 
     if (isLoading) {
@@ -54,18 +53,16 @@ export default function Index() {
         <View style={styles.container}>
             {/* Header */}
             <Header
-                currentCourse={currentCourse}
+                currentCourse={currentCourse || undefined}
                 onAvatarPress={handleAvatarPress}
                 onCourseTitlePress={handleCourseTitlePress}
                 onMenuPress={handleMenuPress}
             />
 
-            {/* Bottom Sheets */}
-            <BottomSheets
-                ref={bottomSheetsRef}
-                currentCourse={currentCourse}
-                onCourseSwitch={handleCourseSwitch}
-            />
+            {/* Sheet Components */}
+            <GeneralSettingsSheet ref={generalSettingsRef} />
+            <CourseSwitcherSheet ref={courseSwitcherRef} />
+            <CourseSettingsSheet ref={courseSettingsRef} />
         </View>
     )
 }
