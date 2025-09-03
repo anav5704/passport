@@ -10,9 +10,9 @@ interface BottomSheetsProps {
 }
 
 export interface BottomSheetsRef {
-    openUserSettings: () => void
+    openAppSettings: () => void
     openCourseSwitcher: () => void
-    openCourseManagement: () => void
+    openCourseSettings: () => void
 }
 
 const BottomSheets = forwardRef<BottomSheetsRef, BottomSheetsProps>(
@@ -38,7 +38,7 @@ const BottomSheets = forwardRef<BottomSheetsRef, BottomSheetsProps>(
 
         // Expose methods to parent component
         useImperativeHandle(ref, () => ({
-            openUserSettings: () => {
+            openAppSettings: () => {
                 closeOtherSheets('userSettings')
                 userSettingsSheetRef.current?.expand()
             },
@@ -46,7 +46,7 @@ const BottomSheets = forwardRef<BottomSheetsRef, BottomSheetsProps>(
                 closeOtherSheets('courseSwitcher')
                 courseSwitcherSheetRef.current?.expand()
             },
-            openCourseManagement: () => {
+            openCourseSettings: () => {
                 closeOtherSheets('courseManagement')
                 courseManagementSheetRef.current?.expand()
             },
@@ -81,11 +81,15 @@ const BottomSheets = forwardRef<BottomSheetsRef, BottomSheetsProps>(
                     backdropComponent={renderBackdrop}
                     backgroundStyle={styles.bottomSheetBackground}
                     style={styles.bottomSheetContainer}
+                    handleIndicatorStyle={{ display: 'none' }}
                 >
                     <BottomSheetView style={styles.bottomSheetContent}>
-                        <Text style={styles.bottomSheetTitle}>User Settings</Text>
+                        <Text style={styles.bottomSheetTitle}>App Settings</Text>
                         <Pressable style={styles.bottomSheetItem}>
                             <Text style={styles.bottomSheetItemText}>Edit Name</Text>
+                        </Pressable>
+                        <Pressable style={styles.bottomSheetItem}>
+                            <Text style={styles.bottomSheetItemText}>Change Theme</Text>
                         </Pressable>
                     </BottomSheetView>
                 </BottomSheet>
@@ -99,27 +103,27 @@ const BottomSheets = forwardRef<BottomSheetsRef, BottomSheetsProps>(
                     backdropComponent={renderBackdrop}
                     backgroundStyle={styles.bottomSheetBackground}
                     style={styles.bottomSheetContainer}
+                    handleIndicatorStyle={{ display: 'none' }}
                 >
                     <BottomSheetView style={styles.bottomSheetContent}>
                         <Text style={styles.bottomSheetTitle}>Switch Course</Text>
                         {user?.courses?.map((course) => (
                             <Pressable
                                 key={course.id}
-                                style={[
-                                    styles.bottomSheetItem,
-                                    currentCourse?.id === course.id && styles.activeItem
-                                ]}
+                                style={styles.bottomSheetItem}
                                 onPress={() => handleCourseSelect(course.id)}
                             >
-                                <Text style={styles.bottomSheetItemText}>{course.code}</Text>
-                                {currentCourse?.id === course.id && (
-                                    <Ionicons name="checkmark" size={20} color="#009ca3" />
-                                )}
+                                <Text style={[
+                                    styles.bottomSheetItemText,
+                                    currentCourse?.id === course.id && { color: '#009ca3' }
+                                ]}>
+                                    {course.code}
+                                </Text>
                             </Pressable>
                         ))}
                         <Pressable style={styles.bottomSheetItem}>
-                            <Text style={[styles.bottomSheetItemText, { color: '#009ca3' }]}>
-                                Create New Course
+                            <Text style={styles.bottomSheetItemText}>
+                                Add Course
                             </Text>
                         </Pressable>
                     </BottomSheetView>
@@ -134,9 +138,10 @@ const BottomSheets = forwardRef<BottomSheetsRef, BottomSheetsProps>(
                     backdropComponent={renderBackdrop}
                     backgroundStyle={styles.bottomSheetBackground}
                     style={styles.bottomSheetContainer}
+                    handleIndicatorStyle={{ display: 'none' }}
                 >
                     <BottomSheetView style={styles.bottomSheetContent}>
-                        <Text style={styles.bottomSheetTitle}>Course Management</Text>
+                        <Text style={styles.bottomSheetTitle}>Course Settings</Text>
                         <Pressable style={styles.bottomSheetItem}>
                             <Text style={styles.bottomSheetItemText}>Export Attendance</Text>
                         </Pressable>
@@ -144,7 +149,7 @@ const BottomSheets = forwardRef<BottomSheetsRef, BottomSheetsProps>(
                             <Text style={styles.bottomSheetItemText}>Edit Course</Text>
                         </Pressable>
                         <Pressable style={styles.bottomSheetItem}>
-                            <Text style={[styles.bottomSheetItemText, { color: '#FF3B30' }]}>
+                            <Text style={[styles.bottomSheetItemText, { color: '#F43F5E' }]}>
                                 Delete Course
                             </Text>
                         </Pressable>
@@ -188,11 +193,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#333',
         flex: 1,
-    },
-    activeItem: {
-        backgroundColor: '#F2F2F7',
-        borderRadius: 8,
-        marginHorizontal: -8,
     },
 })
 

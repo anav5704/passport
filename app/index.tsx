@@ -23,7 +23,7 @@ export default function Index() {
     }
 
     const handleAvatarPress = () => {
-        bottomSheetsRef.current?.openUserSettings()
+        bottomSheetsRef.current?.openAppSettings()
     }
 
     const handleCourseTitlePress = () => {
@@ -31,7 +31,7 @@ export default function Index() {
     }
 
     const handleMenuPress = () => {
-        bottomSheetsRef.current?.openCourseManagement()
+        bottomSheetsRef.current?.openCourseSettings()
     }
 
     if (isLoading) {
@@ -60,27 +60,6 @@ export default function Index() {
                 onMenuPress={handleMenuPress}
             />
 
-            {/* Scanner Area (top 1/4 screen) */}
-            <View style={styles.scannerArea}>
-                <View style={styles.scannerFrame}>
-                    <Text style={styles.scannerText}>Scanner Active</Text>
-                    <Text style={styles.scannerSubText}>
-                        Scan Student ID first, then signature
-                    </Text>
-                </View>
-            </View>
-
-            {/* Attendance History (remaining 3/4 screen) */}
-            <View style={styles.attendanceHistory}>
-                {/* Empty state for now */}
-                <View style={styles.emptyState}>
-                    <Text style={styles.emptyStateText}>No attendance yet.</Text>
-                    <Text style={styles.emptyStateSubText}>
-                        Start scanning student IDs to record attendance
-                    </Text>
-                </View>
-            </View>
-
             {/* Bottom Sheets */}
             <BottomSheets
                 ref={bottomSheetsRef}
@@ -108,51 +87,5 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         flex: 1,
         textAlignVertical: 'center',
-    },
-    scannerArea: {
-        flex: 1,
-        backgroundColor: '#f8f9fa',
-        margin: 16,
-        borderRadius: 12,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderWidth: 2,
-        borderColor: '#e9ecef',
-        borderStyle: 'dashed',
-    },
-    scannerFrame: {
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    scannerText: {
-        fontSize: 18,
-        fontWeight: '600',
-        color: '#333',
-        marginBottom: 8,
-    },
-    scannerSubText: {
-        fontSize: 14,
-        color: '#666',
-        textAlign: 'center',
-    },
-    attendanceHistory: {
-        flex: 3,
-        paddingHorizontal: 16,
-        paddingBottom: 16,
-    },
-    emptyState: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    emptyStateText: {
-        fontSize: 18,
-        color: '#666',
-        marginBottom: 8,
-    },
-    emptyStateSubText: {
-        fontSize: 14,
-        color: '#999',
-        textAlign: 'center',
     },
 })
