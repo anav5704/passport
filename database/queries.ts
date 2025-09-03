@@ -17,6 +17,15 @@ export const createUser = async (name: string) => {
     return user;
 };
 
+export const updateUserName = async (userId: number, name: string) => {
+    const [updatedUser] = await db
+        .update(users)
+        .set({ name: name.trim() })
+        .where(eq(users.id, userId))
+        .returning();
+    return updatedUser;
+};
+
 // Course queries
 export const createCourse = async (code: string, leaderId: number) => {
     return await db.insert(courses).values({

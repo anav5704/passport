@@ -23,7 +23,10 @@
     "react-native-gesture-handler": "~2.24.0",
     "react-native-reanimated": "~3.17.4",
     "react-native-safe-area-context": "5.4.0",
-    "expo-navigation-bar": "~4.2.8"
+    "expo-navigation-bar": "~4.2.8",
+    "expo-sharing": "~13.1.5",
+    "expo-file-system": "~18.1.11",
+    "@expo/vector-icons": "^14.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

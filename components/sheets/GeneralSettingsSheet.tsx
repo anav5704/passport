@@ -1,15 +1,38 @@
 import React, { forwardRef } from 'react'
 import { StyleSheet, Text, Pressable } from 'react-native'
+import { router } from 'expo-router'
+import { useUser } from '@/contexts/UserContext'
 import BaseSheet, { BaseSheetRef } from './BaseSheet'
 
 const GeneralSettingsSheet = forwardRef<BaseSheetRef, {}>((props, ref) => {
+    const { user } = useUser()
+
+    const handleEditName = () => {
+        if (!user) {
+            return
+        }
+
+        // Close the sheet first, then navigate
+        if (ref && 'current' in ref && ref.current) {
+            ref.current.close()
+        }
+        router.push(`/user/${user.id}/update`)
+    }
+
+    const handleChangeTheme = () => {
+        // TODO: Implement theme change navigation
+        if (ref && 'current' in ref && ref.current) {
+            ref.current.close()
+        }
+    }
+
     return (
         <BaseSheet ref={ref}>
             <Text style={styles.title}>General Settings</Text>
-            <Pressable style={styles.item}>
+            <Pressable style={styles.item} onPress={handleEditName}>
                 <Text style={styles.itemText}>Edit Name</Text>
             </Pressable>
-            <Pressable style={styles.item}>
+            <Pressable style={styles.item} onPress={handleChangeTheme}>
                 <Text style={styles.itemText}>Change Theme</Text>
             </Pressable>
         </BaseSheet>
