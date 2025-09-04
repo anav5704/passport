@@ -23,10 +23,17 @@ const CourseSettingsSheet = forwardRef<BaseSheetRef, {}>((props, ref) => {
         }
     }
 
+    const handleExportAttendance = () => {
+        if (currentCourse) {
+            closeAllSheets()
+            router.push(`/course/${currentCourse.id}/attendance`)
+        }
+    }
+
     return (
         <BaseSheet ref={ref}>
             <Text style={styles.title}>Course Settings</Text>
-            <Pressable style={styles.item}>
+            <Pressable style={styles.item} onPress={handleExportAttendance}>
                 <Text style={styles.itemText}>Export Attendance</Text>
             </Pressable>
             <Pressable style={styles.item} onPress={handleEditCourse}>
