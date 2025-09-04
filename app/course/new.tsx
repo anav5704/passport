@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar'
 import { router } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
 import { useCourse } from '@/contexts/CourseContext'
+import Button from '@/components/Button'
 
 export default function NewCourseScreen() {
     const { addCourse } = useCourse()
@@ -58,15 +59,13 @@ export default function NewCourseScreen() {
                 </View>
 
                 <View style={styles.bottomSection}>
-                    <Pressable
-                        style={[styles.confirmButton, isLoading && styles.confirmButtonDisabled]}
+                    <Button
+                        title="Confirm"
                         onPress={handleConfirm}
                         disabled={isLoading}
-                    >
-                        <Text style={styles.confirmButtonText}>
-                            {isLoading ? 'Creating...' : 'Confirm'}
-                        </Text>
-                    </Pressable>
+                        isLoading={isLoading}
+                        loadingText="Creating..."
+                    />
                 </View>
             </View>
         </SafeAreaView>
@@ -126,21 +125,5 @@ const styles = StyleSheet.create({
     bottomSection: {
         paddingBottom: 40, // Increased padding to ensure it's above nav bar
         paddingHorizontal: 20, // Add horizontal padding for better spacing
-    },
-    confirmButton: {
-        backgroundColor: '#009ca3',
-        borderRadius: 9999, // This creates the pill shape (rounded-full equivalent)
-        paddingVertical: 16,
-        paddingHorizontal: 32,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    confirmButtonDisabled: {
-        opacity: 0.6,
-    },
-    confirmButtonText: {
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: '600',
     },
 })

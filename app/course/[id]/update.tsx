@@ -6,6 +6,7 @@ import { router, useLocalSearchParams } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
 import { useCourse } from '@/contexts/CourseContext'
 import { useUser } from '@/contexts/UserContext'
+import Button from '@/components/Button'
 
 export default function UpdateCourseScreen() {
     const { id } = useLocalSearchParams<{ id: string }>()
@@ -75,15 +76,13 @@ export default function UpdateCourseScreen() {
                 </View>
 
                 <View style={styles.bottomSection}>
-                    <Pressable
-                        style={[styles.confirmButton, isLoading && styles.confirmButtonDisabled]}
+                    <Button
+                        title="Confirm"
                         onPress={handleConfirm}
                         disabled={isLoading}
-                    >
-                        <Text style={styles.confirmButtonText}>
-                            {isLoading ? 'Updating...' : 'Confirm'}
-                        </Text>
-                    </Pressable>
+                        isLoading={isLoading}
+                        loadingText="Updating..."
+                    />
                 </View>
             </View>
         </SafeAreaView>
@@ -143,21 +142,5 @@ const styles = StyleSheet.create({
     bottomSection: {
         paddingBottom: 40, // Increased padding to ensure it's above nav bar
         paddingHorizontal: 20, // Add horizontal padding for better spacing
-    },
-    confirmButton: {
-        backgroundColor: '#009ca3',
-        borderRadius: 9999, // This creates the pill shape (rounded-full equivalent)
-        paddingVertical: 16,
-        paddingHorizontal: 32,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    confirmButtonDisabled: {
-        opacity: 0.6,
-    },
-    confirmButtonText: {
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: '600',
     },
 })

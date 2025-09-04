@@ -6,6 +6,7 @@ import { router, useLocalSearchParams } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
 import { useCourse } from '@/contexts/CourseContext'
 import { useUser } from '@/contexts/UserContext'
+import Button from '@/components/Button'
 
 export default function DeleteCourseScreen() {
     const { id } = useLocalSearchParams<{ id: string }>()
@@ -79,15 +80,14 @@ export default function DeleteCourseScreen() {
                 </View>
 
                 <View style={styles.bottomSection}>
-                    <Pressable
-                        style={[styles.deleteButton, isLoading && styles.deleteButtonDisabled]}
+                    <Button
+                        title="Delete Course"
                         onPress={handleDelete}
                         disabled={isLoading}
-                    >
-                        <Text style={styles.deleteButtonText}>
-                            {isLoading ? 'Deleting...' : 'Delete Course'}
-                        </Text>
-                    </Pressable>
+                        variant="danger"
+                        isLoading={isLoading}
+                        loadingText="Deleting..."
+                    />
                 </View>
             </View>
         </SafeAreaView>
@@ -138,21 +138,5 @@ const styles = StyleSheet.create({
     bottomSection: {
         paddingBottom: 40, // Increased padding to ensure it's above nav bar
         paddingHorizontal: 20, // Add horizontal padding for better spacing
-    },
-    deleteButton: {
-        backgroundColor: '#F43F5E',
-        borderRadius: 9999, // This creates the pill shape (rounded-full equivalent)
-        paddingVertical: 16,
-        paddingHorizontal: 32,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    deleteButtonDisabled: {
-        opacity: 0.6,
-    },
-    deleteButtonText: {
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: '600',
     },
 })
