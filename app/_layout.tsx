@@ -1,5 +1,5 @@
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { StyleSheet, Text, View } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import migrations from '@drizzle/migrations'
@@ -15,6 +15,7 @@ import { useEffect } from 'react'
 
 function RootLayoutNav() {
     const { user, isLoading, isOnboardingComplete } = useUser()
+    const insets = useSafeAreaInsets()
     const segments = useSegments()
     const router = useRouter()
 

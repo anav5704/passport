@@ -1,5 +1,5 @@
-import { users, courses } from "@database/schema";
-import { eq } from "drizzle-orm";
+import { users, courses, students, attendance } from "@database/schema";
+import { eq, and } from "drizzle-orm";
 import { db } from "@database";
 
 // User queries
@@ -148,4 +148,76 @@ export const getUserWithCourses = async () => {
         console.error("Error loading user:", error);
         throw error;
     }
+};
+
+// Student queries
+export const getStudentByStudentId = async (studentId: string) => {
+    const [student] = await db
+        .select()
+        .from(students)
+        .where(eq(students.studentId, studentId));
+    return student;
+};
+
+export const createStudent = async (studentId: string, signature: string) => {
+    const [student] = await db
+        .insert(students)
+        .values({
+            studentId: studentId.trim(),
+            studentSignature: signature.trim(),
+        })
+        .returning();
+    return student;
+};
+
+export const updateStudentSignature = async (
+    studentId: string,
+    signature: string
+) => {
+    const [updatedStudent] = await db
+        .update(students)
+        .set({ studentSignature: signature.trim() })
+        .where(eq(students.studentId, studentId))
+        .returning();
+    return updatedStudent;
+};
+
+// Attendance queries
+export const logAttendance = async (studentId: number, courseId: number) => {
+    const [attendanceRecord] = await db
+        .insert(attendance)
+        .values({
+            studentId,
+            courseId,
+        })
+        .returning();
+    return attendanceRecord;
+};
+
+export const getAttendanceByStudentAndCourse = async (
+    studentId: number,
+    courseId: number
+) => {
+    return await db
+        .select()
+        .from(attendance)
+        .where(
+            and(
+                eq(attendance.studentId, studentId),
+                eq(attendance.courseId, courseId)
+            )
+        );
+};
+
+export const getAttendanceHistoryForCourse = async (courseId: number) => {
+    return await db
+        .select({
+            attendanceId: attendance.attendanceId,
+            studentId: students.studentId,
+            timestamp: attendance.timestamp,
+        })
+        .from(attendance)
+        .innerJoin(students, eq(attendance.studentId, students.id))
+        .where(eq(attendance.courseId, courseId))
+        .orderBy(attendance.timestamp); // Will reverse this in the component
 };

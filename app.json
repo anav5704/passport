@@ -32,7 +32,13 @@
         },
         "plugins": [
             "expo-sqlite",
-            "expo-router"
+            "expo-router",
+            [
+                "expo-camera",
+                {
+                    "cameraPermission": "Allow PASSport to access your camera to scan student IDs and signatures."
+                }
+            ]
         ],
         "extra": {
             "router": {},
