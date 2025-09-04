@@ -15,6 +15,7 @@ export const courses = sqliteTable("courses", {
     leaderId: integer("leader_id")
         .notNull()
         .references(() => users.id),
+    lastAccessed: text("last_accessed"),
 });
 
 // Student table

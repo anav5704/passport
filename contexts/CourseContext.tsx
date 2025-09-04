@@ -1,15 +1,16 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { useUser } from './UserContext'
-import { createCourse, updateCourse, deleteCourse } from '@/database/queries'
+import { createCourse, updateCourse, deleteCourse, updateCourseLastAccessed, getMostRecentlyAccessedCourse } from '@/database/queries'
 
 interface Course {
     id: number
     code: string
+    lastAccessed?: string | null
 }
 
 interface CourseContextType {
     currentCourse: Course | null
-    setCourse: (course: Course) => void
+    setCourse: (course: Course) => Promise<void>
     clearCourse: () => void
     addCourse: (code: string) => Promise<void>
     updateCourseCode: (courseId: number, code: string) => Promise<void>
@@ -26,15 +27,38 @@ export function CourseProvider({ children }: CourseProviderProps) {
     const [currentCourse, setCurrentCourse] = useState<Course | null>(null)
     const { user, refreshUser } = useUser()
 
-    // Set the first course as default when user loads
+    // Set the most recently accessed course as default when user loads
     useEffect(() => {
-        if (user?.courses && user.courses.length > 0 && !currentCourse) {
-            setCurrentCourse(user.courses[0])
+        const setInitialCourse = async () => {
+            if (user?.courses && user.courses.length > 0 && !currentCourse) {
+                try {
+                    const mostRecentCourse = await getMostRecentlyAccessedCourse(user.id)
+                    if (mostRecentCourse) {
+                        // Find the course in user.courses to get the full course object
+                        const courseWithData = user.courses.find(c => c.id === mostRecentCourse.id)
+                        if (courseWithData) {
+                            setCurrentCourse(courseWithData)
+                            // Don't call setCourse here to avoid updating lastAccessed on app load
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error setting initial course:', error)
+                    // Fallback to first course if there's an error
+                    setCurrentCourse(user.courses[0])
+                }
+            }
         }
+
+        setInitialCourse()
     }, [user, currentCourse])
 
-    const setCourse = (course: Course) => {
+    const setCourse = async (course: Course) => {
         setCurrentCourse(course)
+        try {
+            await updateCourseLastAccessed(course.id)
+        } catch (error) {
+            console.error('Error updating course last accessed:', error)
+        }
     }
 
     const clearCourse = () => {
@@ -43,8 +67,17 @@ export function CourseProvider({ children }: CourseProviderProps) {
 
     const addCourse = async (code: string) => {
         if (!user) throw new Error('No user found')
-        await createCourse(code, user.id)
+        const newCourse = await createCourse(code, user.id)
+        await updateCourseLastAccessed(newCourse.id)
         await refreshUser()
+
+        // Set the newly created course as the current course
+        const courseWithData = {
+            id: newCourse.id,
+            code: newCourse.code,
+            lastAccessed: new Date().toISOString()
+        }
+        setCurrentCourse(courseWithData)
     }
 
     const updateCourseCode = async (courseId: number, code: string) => {

@@ -11,6 +11,7 @@ CREATE TABLE `courses` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`code` text NOT NULL,
 	`leader_id` integer NOT NULL,
+	`last_accessed` text,
 	FOREIGN KEY (`leader_id`) REFERENCES `users`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint

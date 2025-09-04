@@ -11,10 +11,10 @@ const CourseSwitcherSheet = forwardRef<BaseSheetRef, {}>((props, ref) => {
     const { currentCourse, setCourse } = useCourse()
     const { closeAllSheets } = useSheet()
 
-    const handleCourseSelect = (courseId: number) => {
+    const handleCourseSelect = async (courseId: number) => {
         const course = user?.courses?.find(c => c.id === courseId)
         if (course) {
-            setCourse(course)
+            await setCourse(course)
         }
         closeAllSheets()
     }

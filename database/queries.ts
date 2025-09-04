@@ -28,10 +28,14 @@ export const updateUserName = async (userId: number, name: string) => {
 
 // Course queries
 export const createCourse = async (code: string, leaderId: number) => {
-    return await db.insert(courses).values({
-        code: code.trim(),
-        leaderId,
-    });
+    const [course] = await db
+        .insert(courses)
+        .values({
+            code: code.trim(),
+            leaderId,
+        })
+        .returning();
+    return course;
 };
 
 export const getCoursesByLeaderId = async (leaderId: number) => {
@@ -62,6 +66,41 @@ export const getCourseById = async (courseId: number) => {
     return course;
 };
 
+export const updateCourseLastAccessed = async (courseId: number) => {
+    const timestamp = new Date().toISOString();
+    await db
+        .update(courses)
+        .set({ lastAccessed: timestamp })
+        .where(eq(courses.id, courseId));
+};
+
+export const getMostRecentlyAccessedCourse = async (leaderId: number) => {
+    const userCourses = await getCoursesByLeaderId(leaderId);
+
+    if (userCourses.length === 0) {
+        return null;
+    }
+
+    // Filter courses that have lastAccessed and sort by most recent
+    const coursesWithAccess = userCourses.filter(
+        (course) => course.lastAccessed
+    );
+
+    if (coursesWithAccess.length === 0) {
+        // If no courses have been accessed yet, return the first course
+        return userCourses[0];
+    }
+
+    // Sort by lastAccessed in descending order (most recent first)
+    coursesWithAccess.sort((a, b) => {
+        const dateA = new Date(a.lastAccessed!);
+        const dateB = new Date(b.lastAccessed!);
+        return dateB.getTime() - dateA.getTime();
+    });
+
+    return coursesWithAccess[0];
+};
+
 // Combined queries
 export const setupUserWithCourse = async (name: string, courseCode: string) => {
     try {
@@ -69,7 +108,10 @@ export const setupUserWithCourse = async (name: string, courseCode: string) => {
         const user = await createUser(name);
 
         // Insert course
-        await createCourse(courseCode, user.id);
+        const course = await createCourse(courseCode, user.id);
+
+        // Set the course as accessed (since it's the user's first course)
+        await updateCourseLastAccessed(course.id);
 
         return user;
     } catch (error) {
@@ -99,6 +141,7 @@ export const getUserWithCourses = async () => {
             courses: userCourses.map((course) => ({
                 id: course.id,
                 code: course.code,
+                lastAccessed: course.lastAccessed,
             })),
         };
     } catch (error) {

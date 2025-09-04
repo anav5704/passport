@@ -4,7 +4,7 @@ import { getUserWithCourses, updateUserName as updateUserNameQuery } from '@data
 interface User {
     id: number
     name: string
-    courses: { id: number; code: string }[]
+    courses: { id: number; code: string; lastAccessed?: string | null }[]
 }
 
 interface UserContextType {
