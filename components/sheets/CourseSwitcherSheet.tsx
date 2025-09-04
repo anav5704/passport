@@ -11,6 +11,36 @@ const CourseSwitcherSheet = forwardRef<BaseSheetRef, {}>((props, ref) => {
     const { currentCourse, setCourse } = useCourse()
     const { closeAllSheets } = useSheet()
 
+    // Function to parse course code and extract alphabets and digits for sorting
+    const parseCourseCode = (courseCode: string) => {
+        const match = courseCode.match(/^([A-Za-z]{2})(\d{3})/)
+        if (match) {
+            return {
+                alphabets: match[1].toUpperCase(),
+                digits: parseInt(match[2], 10)
+            }
+        }
+        // Fallback for codes that don't match the expected pattern
+        return {
+            alphabets: courseCode.substring(0, 2).toUpperCase(),
+            digits: 999 // Put non-matching codes at the end
+        }
+    }
+
+    // Sort courses by alphabets first, then by digits
+    const sortedCourses = user?.courses ? [...user.courses].sort((a, b) => {
+        const parsedA = parseCourseCode(a.code)
+        const parsedB = parseCourseCode(b.code)
+
+        // First sort by alphabets
+        if (parsedA.alphabets !== parsedB.alphabets) {
+            return parsedA.alphabets.localeCompare(parsedB.alphabets)
+        }
+
+        // If alphabets are the same, sort by digits
+        return parsedA.digits - parsedB.digits
+    }) : []
+
     const handleCourseSelect = async (courseId: number) => {
         const course = user?.courses?.find(c => c.id === courseId)
         if (course) {
@@ -27,7 +57,7 @@ const CourseSwitcherSheet = forwardRef<BaseSheetRef, {}>((props, ref) => {
     return (
         <BaseSheet ref={ref}>
             <Text style={styles.title}>Switch Course</Text>
-            {user?.courses?.map((course) => (
+            {sortedCourses.map((course) => (
                 <Pressable
                     key={course.id}
                     style={styles.item}

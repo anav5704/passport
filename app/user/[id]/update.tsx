@@ -63,7 +63,6 @@ export default function UpdateUserScreen() {
                         value={name}
                         onChangeText={setName}
                         placeholder="Enter your name"
-                        autoFocus
                         returnKeyType="done"
                         onSubmitEditing={handleConfirm}
                     />

@@ -51,7 +51,6 @@ export default function NewCourseScreen() {
                         value={courseCode}
                         onChangeText={setCourseCode}
                         placeholder="Enter course code"
-                        autoFocus
                         returnKeyType="done"
                         onSubmitEditing={handleConfirm}
                         autoCapitalize="characters"
