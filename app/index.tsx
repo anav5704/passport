@@ -126,7 +126,7 @@ export default function Index() {
                                     </View>
                                 )}
                                 style={styles.attendanceList}
-                                contentContainerStyle={{ paddingBottom: insets.bottom + 16 }}
+                                contentContainerStyle={{ paddingBottom: insets.bottom }}
                                 showsVerticalScrollIndicator={false}
                             />
                         ) : (

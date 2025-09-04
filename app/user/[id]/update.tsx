@@ -68,7 +68,7 @@ export default function UpdateUserScreen() {
                     />
                 </View>
 
-                <View style={[styles.bottomSection, { paddingBottom: insets.bottom || 20 }]}>
+                <View style={[styles.bottomSection, { paddingBottom: insets.bottom + 6 }]}>
                     <Button
                         title="Confirm"
                         onPress={handleConfirm}
@@ -90,11 +90,11 @@ const styles = StyleSheet.create({
     content: {
         flex: 1,
         justifyContent: 'space-between',
-        paddingHorizontal: 20,
-        paddingBottom: 20, // Add bottom padding for better spacing from nav bar
+        padding: 20,
+        paddingBottom: 0
     },
     topSection: {
-        paddingTop: 32,
+        // paddingTop: 32,
     },
     label: {
         fontSize: 16,
