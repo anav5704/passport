@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, FlatList, Animated } from 'react-native'
+import { StyleSheet, Text, View, FlatList } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useUser } from '@/contexts/UserContext'
 import { useCourse } from '@/contexts/CourseContext'
@@ -17,7 +17,6 @@ export default function Index() {
     const insets = useSafeAreaInsets()
     const [attendanceHistory, setAttendanceHistory] = useState<any[]>([])
     const [isLoadingAttendance, setIsLoadingAttendance] = useState(false)
-    const slideAnim = useState(() => new Animated.Value(0))[0]
     const {
         generalSettingsRef,
         courseSwitcherRef,
@@ -59,17 +58,8 @@ export default function Index() {
             courseId: currentCourse?.id
         }
 
-        // Add to top of list with animation
+        // Add to top of list
         setAttendanceHistory(prev => [newAttendance, ...prev])
-
-        // Trigger slide animation
-        slideAnim.setValue(-50)
-        Animated.spring(slideAnim, {
-            toValue: 0,
-            useNativeDriver: true,
-            tension: 100,
-            friction: 8,
-        }).start()
     }
 
     const handleAvatarPress = () => {
@@ -127,15 +117,13 @@ export default function Index() {
                                 data={attendanceHistory}
                                 keyExtractor={(item, index) => `${item.id}-${item.studentId}-${index}`}
                                 renderItem={({ item, index }) => (
-                                    <Animated.View
-                                        style={[
-                                            styles.attendanceItem,
-                                            index === 0 ? { transform: [{ translateY: slideAnim }] } : {}
-                                        ]}
-                                    >
+                                    <View style={[
+                                        styles.attendanceItem,
+                                        index < attendanceHistory.length - 1 && styles.attendanceItemWithMargin
+                                    ]}>
                                         <Text style={styles.studentId}>{item.studentId}</Text>
                                         <Text style={styles.timestamp}>{new Date(item.timestamp).toLocaleString()}</Text>
-                                    </Animated.View>
+                                    </View>
                                 )}
                                 style={styles.attendanceList}
                                 contentContainerStyle={{ paddingBottom: insets.bottom + 16 }}
@@ -172,7 +160,7 @@ const styles = StyleSheet.create({
         paddingBottom: 0
     },
     scannerSection: {
-        marginBottom: 0,
+
     },
     statsSection: {
         flex: 1,
@@ -210,15 +198,17 @@ const styles = StyleSheet.create({
     },
     attendanceList: {
         flex: 1,
+        marginTop: 20
     },
     attendanceItem: {
-        // backgroundColor: '#fff',
-        // borderRadius: 12,
-        // padding: 16,
-        marginTop: 12,
-        marginBottom: 12,
-        // borderWidth: 1,
-        // borderColor: '#f0f0f0',
+        backgroundColor: '#fff',
+        borderRadius: 8,
+        padding: 16,
+        borderWidth: 1,
+        borderColor: '#f4f4f5', // zinc-100 equivalent
+    },
+    attendanceItemWithMargin: {
+        marginBottom: 20,
     },
     studentId: {
         fontSize: 16,

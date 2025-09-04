@@ -88,6 +88,8 @@ const styles = StyleSheet.create({
         paddingRight: 20,
         paddingVertical: 16,
         backgroundColor: '#fff',
+        borderBottomWidth: 1,
+        borderBottomColor: '#f4f4f5', // zinc-100 equivalent
     },
     avatar: {
         width: 40,
