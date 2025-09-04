@@ -1,15 +1,16 @@
 import React, { useState } from 'react'
-import { View, Text, TextInput, Pressable, StyleSheet, Alert } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { View, Text, TextInput, StyleSheet, Alert } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { StatusBar } from 'expo-status-bar'
 import { router, useLocalSearchParams } from 'expo-router'
-import { Ionicons } from '@expo/vector-icons'
 import { useUser } from '@/contexts/UserContext'
+import Header from '@/components/Header'
 import Button from '@/components/Button'
 
 export default function UpdateUserScreen() {
     const { id } = useLocalSearchParams<{ id: string }>()
     const { user, updateUserName } = useUser()
+    const insets = useSafeAreaInsets()
     const [name, setName] = useState(user?.name || '')
     const [isLoading, setIsLoading] = useState(false)
 
@@ -43,17 +44,15 @@ export default function UpdateUserScreen() {
     }
 
     return (
-        <SafeAreaView style={styles.container} edges={['top']}>
+        <View style={styles.container}>
             <StatusBar style="dark" translucent />
 
-            {/* Header */}
-            <View style={styles.header}>
-                <Pressable onPress={() => router.back()} style={styles.backButton}>
-                    <Ionicons name="arrow-back" size={24} color="#000" />
-                </Pressable>
-                <Text style={styles.headerTitle}>Edit Name</Text>
-                <View style={styles.headerSpacer} />
-            </View>
+            <Header
+                title="Edit Name"
+                showBackButton={true}
+                showAvatar={false}
+                showMenu={false}
+            />
 
             {/* Content */}
             <View style={styles.content}>
@@ -69,7 +68,7 @@ export default function UpdateUserScreen() {
                     />
                 </View>
 
-                <View style={styles.bottomSection}>
+                <View style={[styles.bottomSection, { paddingBottom: insets.bottom || 20 }]}>
                     <Button
                         title="Confirm"
                         onPress={handleConfirm}
@@ -79,7 +78,7 @@ export default function UpdateUserScreen() {
                     />
                 </View>
             </View>
-        </SafeAreaView>
+        </View>
     )
 }
 
@@ -87,27 +86,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-    },
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingHorizontal: 20,
-        paddingVertical: 16,
-        borderBottomWidth: 1,
-        borderBottomColor: '#e5e5e5',
-    },
-    backButton: {
-        padding: 4,
-    },
-    headerTitle: {
-        fontSize: 18,
-        fontWeight: '600',
-        color: '#000',
-        textAlign: 'center',
-    },
-    headerSpacer: {
-        width: 32, // Same width as back button to center the title
     },
     content: {
         flex: 1,
@@ -134,7 +112,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     bottomSection: {
-        paddingBottom: 40, // Increased padding to ensure it's above nav bar
-        paddingHorizontal: 20, // Add horizontal padding for better spacing
+        // paddingBottom will be set dynamically using insets.bottom
     },
 })

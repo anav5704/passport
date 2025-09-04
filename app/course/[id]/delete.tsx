@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, Pressable, StyleSheet, Alert } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { View, Text, StyleSheet, Alert } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { StatusBar } from 'expo-status-bar'
 import { router, useLocalSearchParams } from 'expo-router'
-import { Ionicons } from '@expo/vector-icons'
 import { useCourse } from '@/contexts/CourseContext'
 import { useUser } from '@/contexts/UserContext'
+import Header from '@/components/Header'
 import Button from '@/components/Button'
 
 export default function DeleteCourseScreen() {
     const { id } = useLocalSearchParams<{ id: string }>()
     const { removeCourse } = useCourse()
     const { user } = useUser()
+    const insets = useSafeAreaInsets()
     const [courseName, setCourseName] = useState('')
     const [isLoading, setIsLoading] = useState(false)
 
@@ -59,17 +60,15 @@ export default function DeleteCourseScreen() {
     }
 
     return (
-        <SafeAreaView style={styles.container} edges={['top']}>
+        <View style={styles.container}>
             <StatusBar style="dark" translucent />
 
-            {/* Header */}
-            <View style={styles.header}>
-                <Pressable onPress={() => router.back()} style={styles.backButton}>
-                    <Ionicons name="arrow-back" size={24} color="#000" />
-                </Pressable>
-                <Text style={styles.headerTitle}>Delete Course</Text>
-                <View style={styles.headerSpacer} />
-            </View>
+            <Header
+                title="Delete Course"
+                showBackButton={true}
+                showAvatar={false}
+                showMenu={false}
+            />
 
             {/* Content */}
             <View style={styles.content}>
@@ -79,7 +78,7 @@ export default function DeleteCourseScreen() {
                     </Text>
                 </View>
 
-                <View style={styles.bottomSection}>
+                <View style={[styles.bottomSection, { paddingBottom: insets.bottom || 20 }]}>
                     <Button
                         title="Delete Course"
                         onPress={handleDelete}
@@ -90,7 +89,7 @@ export default function DeleteCourseScreen() {
                     />
                 </View>
             </View>
-        </SafeAreaView>
+        </View>
     )
 }
 
@@ -98,27 +97,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-    },
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingHorizontal: 20,
-        paddingVertical: 16,
-        borderBottomWidth: 1,
-        borderBottomColor: '#e5e5e5',
-    },
-    backButton: {
-        padding: 4,
-    },
-    headerTitle: {
-        fontSize: 18,
-        fontWeight: '600',
-        color: '#000',
-        textAlign: 'center',
-    },
-    headerSpacer: {
-        width: 32, // Same width as back button to center the title
     },
     content: {
         flex: 1,
@@ -136,7 +114,6 @@ const styles = StyleSheet.create({
         lineHeight: 24,
     },
     bottomSection: {
-        paddingBottom: 40, // Increased padding to ensure it's above nav bar
-        paddingHorizontal: 20, // Add horizontal padding for better spacing
+        // paddingBottom will be set dynamically using insets.bottom
     },
 })
