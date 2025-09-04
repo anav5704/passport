@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { useUser } from './UserContext'
+import { createCourse, updateCourse, deleteCourse } from '@/database/queries'
 
 interface Course {
     id: number
@@ -10,6 +11,9 @@ interface CourseContextType {
     currentCourse: Course | null
     setCourse: (course: Course) => void
     clearCourse: () => void
+    addCourse: (code: string) => Promise<void>
+    updateCourseCode: (courseId: number, code: string) => Promise<void>
+    removeCourse: (courseId: number) => Promise<void>
 }
 
 const CourseContext = createContext<CourseContextType | undefined>(undefined)
@@ -20,7 +24,7 @@ interface CourseProviderProps {
 
 export function CourseProvider({ children }: CourseProviderProps) {
     const [currentCourse, setCurrentCourse] = useState<Course | null>(null)
-    const { user } = useUser()
+    const { user, refreshUser } = useUser()
 
     // Set the first course as default when user loads
     useEffect(() => {
@@ -37,12 +41,39 @@ export function CourseProvider({ children }: CourseProviderProps) {
         setCurrentCourse(null)
     }
 
+    const addCourse = async (code: string) => {
+        if (!user) throw new Error('No user found')
+        await createCourse(code, user.id)
+        await refreshUser()
+    }
+
+    const updateCourseCode = async (courseId: number, code: string) => {
+        await updateCourse(courseId, code)
+        await refreshUser()
+        // Update current course if it's the one being updated
+        if (currentCourse?.id === courseId) {
+            setCurrentCourse({ ...currentCourse, code })
+        }
+    }
+
+    const removeCourse = async (courseId: number) => {
+        await deleteCourse(courseId)
+        await refreshUser()
+        // Clear current course if it's the one being deleted
+        if (currentCourse?.id === courseId) {
+            clearCourse()
+        }
+    }
+
     return (
         <CourseContext.Provider
             value={{
                 currentCourse,
                 setCourse,
                 clearCourse,
+                addCourse,
+                updateCourseCode,
+                removeCourse,
             }}
         >
             {children}

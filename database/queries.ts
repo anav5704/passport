@@ -41,6 +41,27 @@ export const getCoursesByLeaderId = async (leaderId: number) => {
         .where(eq(courses.leaderId, leaderId));
 };
 
+export const updateCourse = async (courseId: number, code: string) => {
+    const [updatedCourse] = await db
+        .update(courses)
+        .set({ code: code.trim() })
+        .where(eq(courses.id, courseId))
+        .returning();
+    return updatedCourse;
+};
+
+export const deleteCourse = async (courseId: number) => {
+    await db.delete(courses).where(eq(courses.id, courseId));
+};
+
+export const getCourseById = async (courseId: number) => {
+    const [course] = await db
+        .select()
+        .from(courses)
+        .where(eq(courses.id, courseId));
+    return course;
+};
+
 // Combined queries
 export const setupUserWithCourse = async (name: string, courseCode: string) => {
     try {

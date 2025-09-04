@@ -1,5 +1,6 @@
 import React, { forwardRef } from 'react'
 import { StyleSheet, Text, Pressable } from 'react-native'
+import { router } from 'expo-router'
 import { useUser } from '@/contexts/UserContext'
 import { useCourse } from '@/contexts/CourseContext'
 import { useSheet } from '@/contexts/SheetContext'
@@ -16,6 +17,11 @@ const CourseSwitcherSheet = forwardRef<BaseSheetRef, {}>((props, ref) => {
             setCourse(course)
         }
         closeAllSheets()
+    }
+
+    const handleAddCourse = () => {
+        closeAllSheets()
+        router.push('/course/new')
     }
 
     return (
@@ -35,7 +41,7 @@ const CourseSwitcherSheet = forwardRef<BaseSheetRef, {}>((props, ref) => {
                     </Text>
                 </Pressable>
             ))}
-            <Pressable style={styles.item}>
+            <Pressable style={styles.item} onPress={handleAddCourse}>
                 <Text style={styles.itemText}>
                     Add Course
                 </Text>

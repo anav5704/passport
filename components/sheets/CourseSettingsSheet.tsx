@@ -1,18 +1,38 @@
 import React, { forwardRef } from 'react'
 import { StyleSheet, Text, Pressable } from 'react-native'
+import { router } from 'expo-router'
+import { useCourse } from '@/contexts/CourseContext'
+import { useSheet } from '@/contexts/SheetContext'
 import BaseSheet, { BaseSheetRef } from './BaseSheet'
 
 const CourseSettingsSheet = forwardRef<BaseSheetRef, {}>((props, ref) => {
+    const { currentCourse } = useCourse()
+    const { closeAllSheets } = useSheet()
+
+    const handleEditCourse = () => {
+        if (currentCourse) {
+            closeAllSheets()
+            router.push(`/course/${currentCourse.id}/update`)
+        }
+    }
+
+    const handleDeleteCourse = () => {
+        if (currentCourse) {
+            closeAllSheets()
+            router.push(`/course/${currentCourse.id}/delete`)
+        }
+    }
+
     return (
         <BaseSheet ref={ref}>
             <Text style={styles.title}>Course Settings</Text>
             <Pressable style={styles.item}>
                 <Text style={styles.itemText}>Export Attendance</Text>
             </Pressable>
-            <Pressable style={styles.item}>
+            <Pressable style={styles.item} onPress={handleEditCourse}>
                 <Text style={styles.itemText}>Edit Course</Text>
             </Pressable>
-            <Pressable style={styles.item}>
+            <Pressable style={styles.item} onPress={handleDeleteCourse}>
                 <Text style={[styles.itemText, { color: '#F43F5E' }]}>
                     Delete Course
                 </Text>
