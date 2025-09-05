@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
-import { View, Text, TextInput, StyleSheet, Alert } from 'react-native'
+import { View, Text, StyleSheet, Alert } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { StatusBar } from 'expo-status-bar'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useUser } from '@/contexts/UserContext'
 import Header from '@/components/Header'
 import Button from '@/components/Button'
+import TextInput from '@/components/TextInput'
 
 export default function UpdateUserScreen() {
     const { id } = useLocalSearchParams<{ id: string }>()
@@ -59,7 +60,6 @@ export default function UpdateUserScreen() {
                 <View style={styles.topSection}>
                     <Text style={styles.label}>Full Name</Text>
                     <TextInput
-                        style={styles.input}
                         value={name}
                         onChangeText={setName}
                         placeholder="Enter your name"
@@ -101,15 +101,6 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         color: '#333',
         marginBottom: 12,
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: '#d1d5db',
-        borderRadius: 12,
-        paddingHorizontal: 16,
-        paddingVertical: 14,
-        fontSize: 16,
-        backgroundColor: '#fff',
     },
     bottomSection: {
         // paddingBottom will be set dynamically using insets.bottom

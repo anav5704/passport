@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react'
 import {
     View,
     Text,
-    TextInput,
+    TextInput as RNTextInput,
     Pressable,
     StyleSheet,
     ScrollView,
@@ -15,6 +15,7 @@ import { setupUserWithCourse } from '@database/queries'
 import { StatusBar } from 'expo-status-bar'
 import { useUser } from '@/contexts/UserContext'
 import { router } from 'expo-router'
+import TextInput from '@/components/TextInput'
 
 export default function OnboardingScreen() {
     const [leaderName, setLeaderName] = useState('')
@@ -23,8 +24,8 @@ export default function OnboardingScreen() {
     const { refreshUser } = useUser()
 
     // Refs for TextInput components
-    const nameInputRef = useRef<TextInput>(null)
-    const courseInputRef = useRef<TextInput>(null)
+    const nameInputRef = useRef<RNTextInput>(null)
+    const courseInputRef = useRef<RNTextInput>(null)
 
     const updateCourseCode = (value: string) => {
         // Format course code: remove spaces and convert to uppercase
@@ -91,7 +92,6 @@ export default function OnboardingScreen() {
                         <Text style={styles.label}>Your Name</Text>
                         <TextInput
                             ref={nameInputRef}
-                            style={styles.input}
                             value={leaderName}
                             onChangeText={setLeaderName}
                             autoCapitalize="words"
@@ -105,7 +105,6 @@ export default function OnboardingScreen() {
 
                         <TextInput
                             ref={courseInputRef}
-                            style={styles.input}
                             value={courseCode}
                             onChangeText={updateCourseCode}
                             autoCapitalize="characters"
@@ -167,14 +166,6 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         color: '#1a1a1a',
         marginBottom: 8,
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: '#ddd',
-        borderRadius: 12,
-        padding: 16,
-        fontSize: 16,
-        backgroundColor: '#f9f9f9',
     },
     completeButton: {
         backgroundColor: '#009ca3',
