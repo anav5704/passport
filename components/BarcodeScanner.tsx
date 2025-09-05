@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet } from 'react-native'
-import { CameraView, useCameraPermissions } from 'expo-camera'
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { Camera, CameraView } from 'expo-camera'
 import * as Haptics from 'expo-haptics'
 import { useCourse } from '@/contexts/CourseContext'
 import { getStudentByStudentId, createStudent, updateStudentSignature, logAttendance } from '@/database/queries'
 
 interface BarcodeScannerProps {
     isActive: boolean
+    onScanSuccess: (data: string) => void
     onAttendanceLogged?: (studentId: string) => void
 }
 
@@ -16,23 +17,60 @@ enum ScanState {
     IDLE = 'IDLE'
 }
 
-export default function BarcodeScanner({ isActive, onAttendanceLogged }: BarcodeScannerProps) {
-    const [permission, requestPermission] = useCameraPermissions()
+export default function BarcodeScanner({ isActive, onScanSuccess, onAttendanceLogged }: BarcodeScannerProps) {
+    const [hasPermission, setHasPermission] = useState<boolean | null>(null)
+    const [permissionResponse, setPermissionResponse] = useState<any>(null)
     const [scanState, setScanState] = useState<ScanState>(ScanState.IDLE)
     const [currentStudent, setCurrentStudent] = useState<any>(null)
     const [isProcessing, setIsProcessing] = useState(false)
     const [lastScanTime, setLastScanTime] = useState(0)
     const { currentCourse } = useCourse()
 
-    const SCAN_COOLDOWN = 1000 // 2 seconds between scans
+    const SCAN_COOLDOWN = 1000 // 1 second between scans
 
     useEffect(() => {
-        if (isActive && permission?.granted) {
+        getCameraPermissions()
+    }, [])
+
+    const getCameraPermissions = async () => {
+        try {
+            // First check if we already have permission
+            const { status } = await Camera.getCameraPermissionsAsync()
+
+            if (status === 'granted') {
+                setHasPermission(true)
+            } else {
+                // Request permission - this triggers the native dialog
+                const response = await Camera.requestCameraPermissionsAsync()
+                setPermissionResponse(response)
+                setHasPermission(response.status === 'granted')
+            }
+        } catch (error) {
+            console.error('Error requesting camera permission:', error)
+            setHasPermission(false)
+        }
+    }
+
+    // Manual permission request for when user taps to grant permission
+    const requestCameraPermission = async () => {
+        try {
+            // This will trigger the native permission dialog
+            const response = await Camera.requestCameraPermissionsAsync()
+            setPermissionResponse(response)
+            setHasPermission(response.status === 'granted')
+        } catch (error) {
+            console.error('Error requesting camera permission:', error)
+            setHasPermission(false)
+        }
+    }
+
+    useEffect(() => {
+        if (isActive && hasPermission) {
             setScanState(ScanState.STUDENT_ID)
         } else {
             setScanState(ScanState.IDLE)
         }
-    }, [isActive, permission?.granted])
+    }, [isActive, hasPermission])
 
     const handleBarcodeScanned = async ({ type, data }: { type: string; data: string }) => {
         const now = Date.now()
@@ -132,7 +170,6 @@ export default function BarcodeScanner({ isActive, onAttendanceLogged }: Barcode
                 } else {
                     // One longer vibrate for failure (signature mismatch)
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
-
                 }
             }
 
@@ -147,23 +184,18 @@ export default function BarcodeScanner({ isActive, onAttendanceLogged }: Barcode
         setScanState(isActive ? ScanState.STUDENT_ID : ScanState.IDLE)
     }
 
-    if (!permission) {
+    if (hasPermission === null) {
         return (
             <View style={styles.container}>
-                <Text style={styles.messageText}>Requesting camera permission...</Text>
+                <View style={styles.loadingContainer}>
+                    <ActivityIndicator size="large" color="#fff" />
+                </View>
             </View>
         )
     }
 
-    if (!permission.granted) {
-        return (
-            <View style={styles.container}>
-                <Text style={styles.messageText}>Camera permission required</Text>
-                <Text style={styles.subMessageText} onPress={requestPermission}>
-                    Tap to grant permission
-                </Text>
-            </View>
-        )
+    if (hasPermission === false) {
+        return null
     }
 
     if (!currentCourse) {
@@ -224,5 +256,10 @@ const styles = StyleSheet.create({
         bottom: 20,
         left: 20,
         right: 20,
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 })
