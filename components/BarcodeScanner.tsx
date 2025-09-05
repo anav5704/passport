@@ -202,7 +202,6 @@ export default function BarcodeScanner({ isActive, onScanSuccess, onAttendanceLo
         return (
             <View style={styles.container}>
                 <Text style={styles.messageText}>No course selected</Text>
-                <Text style={styles.subMessageText}>Please select a course to start scanning</Text>
             </View>
         )
     }

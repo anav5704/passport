@@ -115,36 +115,24 @@ export default function Index() {
 
                 {/* Attendance History */}
                 <View style={styles.statsSection}>
-                    {currentCourse ? (
-                        isLoadingAttendance ? (
-                            <Text style={[styles.courseInfo, { color: colors.textSecondary }]}>Loading attendance history...</Text>
-                        ) : attendanceHistory.length > 0 ? (
-                            <FlatList
-                                data={attendanceHistory}
-                                keyExtractor={(item, index) => `${item.id}-${item.studentId}-${index}`}
-                                renderItem={({ item, index }) => (
-                                    <View style={[
-                                        styles.attendanceItem,
-                                        { backgroundColor: colors.surface, borderColor: colors.border },
-                                        index < attendanceHistory.length - 1 && styles.attendanceItemWithMargin
-                                    ]}>
-                                        <Text style={[styles.studentId, { color: colors.text }]}>{item.studentId}</Text>
-                                        <Text style={[styles.timestamp, { color: colors.textSecondary }]}>{new Date(item.timestamp).toLocaleString()}</Text>
-                                    </View>
-                                )}
-                                style={styles.attendanceList}
-                                contentContainerStyle={{ paddingBottom: insets.bottom }}
-                                showsVerticalScrollIndicator={false}
-                            />
-                        ) : (
-                            <Text style={[styles.courseInfo, { color: colors.textSecondary }]}>
-                                No attendance records yet for {currentCourse.code}
-                            </Text>
-                        )
-                    ) : (
-                        <Text style={[styles.noCourseText, { color: colors.textSecondary }]}>
-                            Select a course to view attendance history
-                        </Text>
+                    {currentCourse && attendanceHistory.length > 0 && !isLoadingAttendance && (
+                        <FlatList
+                            data={attendanceHistory}
+                            keyExtractor={(item, index) => `${item.id}-${item.studentId}-${index}`}
+                            renderItem={({ item, index }) => (
+                                <View style={[
+                                    styles.attendanceItem,
+                                    { backgroundColor: colors.surface, borderColor: colors.border },
+                                    index < attendanceHistory.length - 1 && styles.attendanceItemWithMargin
+                                ]}>
+                                    <Text style={[styles.studentId, { color: colors.text }]}>{item.studentId}</Text>
+                                    <Text style={[styles.timestamp, { color: colors.textSecondary }]}>{new Date(item.timestamp).toLocaleString()}</Text>
+                                </View>
+                            )}
+                            style={styles.attendanceList}
+                            contentContainerStyle={{ paddingBottom: insets.bottom }}
+                            showsVerticalScrollIndicator={false}
+                        />
                     )}
                 </View>
             </View>
@@ -170,23 +158,6 @@ const styles = StyleSheet.create({
     },
     statsSection: {
         flex: 1,
-    },
-    sectionTitle: {
-        fontSize: 20,
-        fontWeight: '600',
-        color: '#333',
-        marginBottom: 16,
-    },
-    courseInfo: {
-        fontSize: 16,
-        color: '#666',
-        textAlign: 'center',
-    },
-    noCourseText: {
-        fontSize: 16,
-        color: '#999',
-        textAlign: 'center',
-        fontStyle: 'italic',
     },
     loadingText: {
         fontSize: 16,
