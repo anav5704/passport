@@ -7,38 +7,42 @@
         "icon": "./assets/icon.png",
         "userInterfaceStyle": "automatic",
         "newArchEnabled": true,
-        "scheme": "PASSport",
+        "scheme": "passport",
         "splash": {
             "image": "./assets/splash-icon.png",
             "resizeMode": "contain",
             "backgroundColor": "#ffffff"
         },
-        "ios": {
-            "supportsTablet": true
-        },
         "android": {
             "adaptiveIcon": {
-                "foregroundImage": "./assets/adaptive-icon.png",
+                "foregroundImage": "./assets/icons/adaptive-icon.png",
                 "backgroundColor": "#ffffff"
             },
             "edgeToEdgeEnabled": true,
-            "package": "com.anav5704.passport",
-            "androidNavigationBar": {
-                "enforceContrast": false
-            }
-        },
-        "web": {
-            "favicon": "./assets/favicon.png"
+            "package": "com.anav5704.passport"
         },
         "plugins": [
             "expo-sqlite",
             "expo-router",
             [
+                "expo-splash-screen",
+                {
+                    "backgroundColor": "#ffffff",
+                    "image": "./assets/icons/splash-icon-light.png",
+                    "dark": {
+                        "image": "./assets/icons/splash-icon-dark.png",
+                        "backgroundColor": "#000000"
+                    },
+                    "imageWidth": 200
+                }
+            ],
+            [
                 "expo-camera",
                 {
-                    "cameraPermission": "Allow PASSport to access your camera to scan student IDs and signatures."
+                    "cameraPermission": "Allow PASSport to access your camera to scan student IDs."
                 }
-            ]
+            ],
+            "expo-font"
         ],
         "extra": {
             "router": {},
