@@ -3,11 +3,13 @@ import { StyleSheet, Text, Pressable } from 'react-native'
 import { router } from 'expo-router'
 import { useCourse } from '@/contexts/CourseContext'
 import { useSheet } from '@/contexts/SheetContext'
+import { useTheme } from '@/contexts/ThemeContext'
 import BaseSheet, { BaseSheetRef } from './BaseSheet'
 
 const CourseSettingsSheet = forwardRef<BaseSheetRef, {}>((props, ref) => {
     const { currentCourse } = useCourse()
     const { closeAllSheets } = useSheet()
+    const { colors } = useTheme()
 
     const handleEditCourse = () => {
         if (currentCourse) {
@@ -32,15 +34,15 @@ const CourseSettingsSheet = forwardRef<BaseSheetRef, {}>((props, ref) => {
 
     return (
         <BaseSheet ref={ref}>
-            <Text style={styles.title}>Course Settings</Text>
+            <Text style={[styles.title, { color: colors.text }]}>Course Settings</Text>
             <Pressable style={styles.item} onPress={handleExportAttendance}>
-                <Text style={styles.itemText}>Export Attendance</Text>
+                <Text style={[styles.itemText, { color: colors.text }]}>Export Attendance</Text>
             </Pressable>
             <Pressable style={styles.item} onPress={handleEditCourse}>
-                <Text style={styles.itemText}>Edit Course</Text>
+                <Text style={[styles.itemText, { color: colors.text }]}>Edit Course</Text>
             </Pressable>
             <Pressable style={styles.item} onPress={handleDeleteCourse}>
-                <Text style={[styles.itemText, { color: '#F43F5E' }]}>
+                <Text style={[styles.itemText, { color: colors.danger }]}>
                     Delete Course
                 </Text>
             </Pressable>
@@ -52,7 +54,6 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 20,
         fontWeight: '600',
-        color: '#333',
         marginBottom: 20,
         textAlign: 'center',
     },
@@ -64,7 +65,6 @@ const styles = StyleSheet.create({
     },
     itemText: {
         fontSize: 16,
-        color: '#333',
         flex: 1,
     },
 })

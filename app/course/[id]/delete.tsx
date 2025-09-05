@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useCourse } from '@/contexts/CourseContext'
 import { useUser } from '@/contexts/UserContext'
+import { useTheme } from '@/contexts/ThemeContext'
 import Header from '@/components/Header'
 import Button from '@/components/Button'
 
@@ -12,6 +13,7 @@ export default function DeleteCourseScreen() {
     const { id } = useLocalSearchParams<{ id: string }>()
     const { removeCourse } = useCourse()
     const { user } = useUser()
+    const { colors, actualTheme } = useTheme()
     const insets = useSafeAreaInsets()
     const [courseName, setCourseName] = useState('')
     const [isLoading, setIsLoading] = useState(false)
@@ -60,8 +62,8 @@ export default function DeleteCourseScreen() {
     }
 
     return (
-        <View style={styles.container}>
-            <StatusBar style="dark" translucent />
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
+            <StatusBar style={actualTheme === 'dark' ? 'light' : 'dark'} translucent />
 
             <Header
                 title="Delete Course"
@@ -73,7 +75,7 @@ export default function DeleteCourseScreen() {
             {/* Content */}
             <View style={styles.content}>
                 <View style={styles.topSection}>
-                    <Text style={styles.warningText}>
+                    <Text style={[styles.warningText, { color: colors.text }]}>
                         You are about to permanently delete the course "{courseName}". This action cannot be undone and will remove all associated attendance data.
                     </Text>
                 </View>
@@ -96,7 +98,6 @@ export default function DeleteCourseScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
     },
     content: {
         flex: 1,
@@ -109,7 +110,6 @@ const styles = StyleSheet.create({
     },
     warningText: {
         fontSize: 16,
-        color: '#666',
         textAlign: 'left',
         lineHeight: 24,
     },

@@ -4,12 +4,14 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { StatusBar } from 'expo-status-bar'
 import { router } from 'expo-router'
 import { useCourse } from '@/contexts/CourseContext'
+import { useTheme } from '@/contexts/ThemeContext'
 import Header from '@/components/Header'
 import Button from '@/components/Button'
 import TextInput from '@/components/TextInput'
 
 export default function NewCourseScreen() {
     const { addCourse } = useCourse()
+    const { colors, actualTheme } = useTheme()
     const insets = useSafeAreaInsets()
     const [courseCode, setCourseCode] = useState('')
     const [isLoading, setIsLoading] = useState(false)
@@ -33,8 +35,8 @@ export default function NewCourseScreen() {
     }
 
     return (
-        <View style={styles.container}>
-            <StatusBar style="dark" translucent />
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
+            <StatusBar style={actualTheme === 'dark' ? 'light' : 'dark'} translucent />
 
             <Header
                 title="Add Course"
@@ -46,7 +48,7 @@ export default function NewCourseScreen() {
             {/* Content */}
             <View style={styles.content}>
                 <View style={styles.topSection}>
-                    <Text style={styles.label}>Course Code</Text>
+                    <Text style={[styles.label, { color: colors.text }]}>Course Code</Text>
                     <TextInput
                         value={courseCode}
                         onChangeText={setCourseCode}

@@ -8,6 +8,7 @@ import * as Sharing from 'expo-sharing'
 import * as XLSX from 'xlsx'
 import { useCourse } from '@/contexts/CourseContext'
 import { useUser } from '@/contexts/UserContext'
+import { useTheme } from '@/contexts/ThemeContext'
 import { getAttendanceHistoryForCourse } from '@/database/queries'
 import Header from '@/components/Header'
 import Button from '@/components/Button'
@@ -15,6 +16,7 @@ import Button from '@/components/Button'
 export default function AttendanceExportScreen() {
     const { id } = useLocalSearchParams<{ id: string }>()
     const { user } = useUser()
+    const { colors, actualTheme } = useTheme()
     const insets = useSafeAreaInsets()
     const [courseName, setCourseName] = useState('')
     const [isLoading, setIsLoading] = useState(false)
@@ -130,8 +132,8 @@ export default function AttendanceExportScreen() {
     }
 
     return (
-        <View style={styles.container}>
-            <StatusBar style="dark" translucent />
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
+            <StatusBar style={actualTheme === 'dark' ? 'light' : 'dark'} translucent />
 
             <Header
                 title="Attendance"
@@ -143,7 +145,7 @@ export default function AttendanceExportScreen() {
             {/* Content */}
             <View style={styles.content}>
                 <View style={styles.topSection}>
-                    <Text style={styles.infoText}>
+                    <Text style={[styles.infoText, { color: colors.text }]}>
                         {attendanceData.length > 0 ? (
                             `The export will contain attendances from ${dateRange.first} to ${dateRange.last}.`
                         ) : (
@@ -169,7 +171,6 @@ export default function AttendanceExportScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
     },
     content: {
         flex: 1,
@@ -182,7 +183,6 @@ const styles = StyleSheet.create({
     },
     infoText: {
         fontSize: 16,
-        color: '#666',
         textAlign: 'left',
         lineHeight: 24,
     },

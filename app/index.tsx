@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useUser } from '@/contexts/UserContext'
 import { useCourse } from '@/contexts/CourseContext'
 import { useSheet } from '@/contexts/SheetContext'
+import { useTheme } from '@/contexts/ThemeContext'
 import { getAttendanceHistoryForCourse } from '@/database/queries'
 import Header from '@/components/Header'
 import BarcodeScanner from '@/components/BarcodeScanner'
@@ -14,6 +15,7 @@ import CourseSettingsSheet from '@/components/sheets/CourseSettingsSheet'
 export default function Index() {
     const { user, isLoading } = useUser()
     const { currentCourse } = useCourse()
+    const { colors, actualTheme } = useTheme()
     const insets = useSafeAreaInsets()
     const [attendanceHistory, setAttendanceHistory] = useState<any[]>([])
     const [isLoadingAttendance, setIsLoadingAttendance] = useState(false)
@@ -76,22 +78,22 @@ export default function Index() {
 
     if (isLoading) {
         return (
-            <View style={styles.container}>
-                <Text style={styles.loadingText}>Loading...</Text>
+            <View style={[styles.container, { backgroundColor: colors.background }]}>
+                <Text style={[styles.loadingText, { color: colors.text }]}>Loading...</Text>
             </View>
         )
     }
 
     if (!user) {
         return (
-            <View style={styles.container}>
-                <Text style={styles.errorText}>No user found</Text>
+            <View style={[styles.container, { backgroundColor: colors.background }]}>
+                <Text style={[styles.errorText, { color: colors.danger }]}>No user found</Text>
             </View>
         )
     }
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
             {/* Header */}
             <Header
                 currentCourse={currentCourse || undefined}
@@ -115,7 +117,7 @@ export default function Index() {
                 <View style={styles.statsSection}>
                     {currentCourse ? (
                         isLoadingAttendance ? (
-                            <Text style={styles.courseInfo}>Loading attendance history...</Text>
+                            <Text style={[styles.courseInfo, { color: colors.textSecondary }]}>Loading attendance history...</Text>
                         ) : attendanceHistory.length > 0 ? (
                             <FlatList
                                 data={attendanceHistory}
@@ -123,10 +125,11 @@ export default function Index() {
                                 renderItem={({ item, index }) => (
                                     <View style={[
                                         styles.attendanceItem,
+                                        { backgroundColor: colors.surface, borderColor: colors.border },
                                         index < attendanceHistory.length - 1 && styles.attendanceItemWithMargin
                                     ]}>
-                                        <Text style={styles.studentId}>{item.studentId}</Text>
-                                        <Text style={styles.timestamp}>{new Date(item.timestamp).toLocaleString()}</Text>
+                                        <Text style={[styles.studentId, { color: colors.text }]}>{item.studentId}</Text>
+                                        <Text style={[styles.timestamp, { color: colors.textSecondary }]}>{new Date(item.timestamp).toLocaleString()}</Text>
                                     </View>
                                 )}
                                 style={styles.attendanceList}
@@ -134,12 +137,12 @@ export default function Index() {
                                 showsVerticalScrollIndicator={false}
                             />
                         ) : (
-                            <Text style={styles.courseInfo}>
+                            <Text style={[styles.courseInfo, { color: colors.textSecondary }]}>
                                 No attendance records yet for {currentCourse.code}
                             </Text>
                         )
                     ) : (
-                        <Text style={styles.noCourseText}>
+                        <Text style={[styles.noCourseText, { color: colors.textSecondary }]}>
                             Select a course to view attendance history
                         </Text>
                     )}
@@ -156,7 +159,6 @@ export default function Index() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
     },
     content: {
         flex: 1,

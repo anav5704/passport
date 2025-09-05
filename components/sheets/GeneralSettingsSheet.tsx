@@ -2,10 +2,12 @@ import React, { forwardRef } from 'react'
 import { StyleSheet, Text, Pressable } from 'react-native'
 import { router } from 'expo-router'
 import { useUser } from '@/contexts/UserContext'
+import { useTheme } from '@/contexts/ThemeContext'
 import BaseSheet, { BaseSheetRef } from './BaseSheet'
 
 const GeneralSettingsSheet = forwardRef<BaseSheetRef, {}>((props, ref) => {
     const { user } = useUser()
+    const { colors } = useTheme()
 
     const handleEditName = () => {
         if (!user) {
@@ -20,20 +22,21 @@ const GeneralSettingsSheet = forwardRef<BaseSheetRef, {}>((props, ref) => {
     }
 
     const handleChangeTheme = () => {
-        // TODO: Implement theme change navigation
+        // Close the sheet first, then navigate to theme screen
         if (ref && 'current' in ref && ref.current) {
             ref.current.close()
         }
+        router.push('/theme')
     }
 
     return (
         <BaseSheet ref={ref}>
-            <Text style={styles.title}>General Settings</Text>
+            <Text style={[styles.title, { color: colors.text }]}>General Settings</Text>
             <Pressable style={styles.item} onPress={handleEditName}>
-                <Text style={styles.itemText}>Edit Name</Text>
+                <Text style={[styles.itemText, { color: colors.text }]}>Edit Name</Text>
             </Pressable>
             <Pressable style={styles.item} onPress={handleChangeTheme}>
-                <Text style={styles.itemText}>Change Theme</Text>
+                <Text style={[styles.itemText, { color: colors.text }]}>Change Theme</Text>
             </Pressable>
         </BaseSheet>
     )
@@ -43,7 +46,6 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 20,
         fontWeight: '600',
-        color: '#333',
         marginBottom: 20,
         textAlign: 'center',
     },
@@ -55,7 +57,6 @@ const styles = StyleSheet.create({
     },
     itemText: {
         fontSize: 16,
-        color: '#333',
         flex: 1,
     },
 })

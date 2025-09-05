@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { StatusBar } from 'expo-status-bar'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useUser } from '@/contexts/UserContext'
+import { useTheme } from '@/contexts/ThemeContext'
 import Header from '@/components/Header'
 import Button from '@/components/Button'
 import TextInput from '@/components/TextInput'
@@ -11,6 +12,7 @@ import TextInput from '@/components/TextInput'
 export default function UpdateUserScreen() {
     const { id } = useLocalSearchParams<{ id: string }>()
     const { user, updateUserName } = useUser()
+    const { colors, actualTheme } = useTheme()
     const insets = useSafeAreaInsets()
     const [name, setName] = useState(user?.name || '')
     const [isLoading, setIsLoading] = useState(false)
@@ -45,8 +47,8 @@ export default function UpdateUserScreen() {
     }
 
     return (
-        <View style={styles.container}>
-            <StatusBar style="dark" translucent />
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
+            <StatusBar style={actualTheme === 'dark' ? 'light' : 'dark'} translucent />
 
             <Header
                 title="Edit Name"
@@ -58,7 +60,7 @@ export default function UpdateUserScreen() {
             {/* Content */}
             <View style={styles.content}>
                 <View style={styles.topSection}>
-                    <Text style={styles.label}>Full Name</Text>
+                    <Text style={[styles.label, { color: colors.text }]}>Full Name</Text>
                     <TextInput
                         value={name}
                         onChangeText={setName}
@@ -85,7 +87,6 @@ export default function UpdateUserScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
     },
     content: {
         flex: 1,
@@ -99,7 +100,6 @@ const styles = StyleSheet.create({
     label: {
         fontSize: 16,
         fontWeight: '500',
-        color: '#333',
         marginBottom: 12,
     },
     bottomSection: {

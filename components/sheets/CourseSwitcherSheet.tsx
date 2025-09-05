@@ -4,12 +4,14 @@ import { router } from 'expo-router'
 import { useUser } from '@/contexts/UserContext'
 import { useCourse } from '@/contexts/CourseContext'
 import { useSheet } from '@/contexts/SheetContext'
+import { useTheme } from '@/contexts/ThemeContext'
 import BaseSheet, { BaseSheetRef } from './BaseSheet'
 
 const CourseSwitcherSheet = forwardRef<BaseSheetRef, {}>((props, ref) => {
     const { user } = useUser()
     const { currentCourse, setCourse } = useCourse()
     const { closeAllSheets } = useSheet()
+    const { colors } = useTheme()
 
     // Function to parse course code and extract alphabets and digits for sorting
     const parseCourseCode = (courseCode: string) => {
@@ -56,7 +58,7 @@ const CourseSwitcherSheet = forwardRef<BaseSheetRef, {}>((props, ref) => {
 
     return (
         <BaseSheet ref={ref}>
-            <Text style={styles.title}>Switch Course</Text>
+            <Text style={[styles.title, { color: colors.text }]}>Switch Course</Text>
             {sortedCourses.map((course) => (
                 <Pressable
                     key={course.id}
@@ -65,14 +67,15 @@ const CourseSwitcherSheet = forwardRef<BaseSheetRef, {}>((props, ref) => {
                 >
                     <Text style={[
                         styles.itemText,
-                        currentCourse?.id === course.id && { color: '#009ca3' }
+                        { color: colors.text },
+                        currentCourse?.id === course.id && { color: colors.success }
                     ]}>
                         {course.code}
                     </Text>
                 </Pressable>
             ))}
             <Pressable style={styles.item} onPress={handleAddCourse}>
-                <Text style={styles.itemText}>
+                <Text style={[styles.itemText, { color: colors.text }]}>
                     Add Course
                 </Text>
             </Pressable>
@@ -84,7 +87,6 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 20,
         fontWeight: '600',
-        color: '#333',
         marginBottom: 20,
         textAlign: 'center',
     },
@@ -96,7 +98,6 @@ const styles = StyleSheet.create({
     },
     itemText: {
         fontSize: 16,
-        color: '#333',
         flex: 1,
     },
 })

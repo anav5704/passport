@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Pressable, Platform, StatusBar } from 'react-na
 import { Ionicons } from '@expo/vector-icons'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useUser } from '@/contexts/UserContext'
+import { useTheme } from '@/contexts/ThemeContext'
 import { router } from 'expo-router'
 
 interface HeaderProps {
@@ -27,6 +28,7 @@ export default function Header({
     showMenu = true
 }: HeaderProps) {
     const { user } = useUser()
+    const { colors } = useTheme()
     const insets = useSafeAreaInsets()
 
     // Get first letter of first name for avatar
@@ -39,11 +41,15 @@ export default function Header({
     }
 
     return (
-        <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
+        <View style={[styles.header, {
+            paddingTop: insets.top + 16,
+            backgroundColor: colors.background,
+            borderBottomColor: colors.border
+        }]}>
             {/* Left side - Avatar or Back Button */}
             {showBackButton ? (
                 <Pressable style={styles.backButton} onPress={handleBackPress}>
-                    <Ionicons name="arrow-back" size={24} color="#000" />
+                    <Ionicons name="arrow-back" size={24} color={colors.text} />
                 </Pressable>
             ) : showAvatar ? (
                 <Pressable style={styles.avatar} onPress={onAvatarPress}>
@@ -58,11 +64,11 @@ export default function Header({
             {/* Center - Course Title or Custom Title */}
             {title ? (
                 <View style={styles.titleContainer}>
-                    <Text style={styles.titleText}>{title}</Text>
+                    <Text style={[styles.titleText, { color: colors.text }]}>{title}</Text>
                 </View>
             ) : (
                 <Pressable style={styles.courseTitle} onPress={onCourseTitlePress}>
-                    <Text style={styles.courseTitleText}>
+                    <Text style={[styles.courseTitleText, { color: colors.text }]}>
                         {currentCourse?.code || 'Select Course'}
                     </Text>
                 </Pressable>
@@ -71,7 +77,7 @@ export default function Header({
             {/* Right side - Menu or Spacer */}
             {showMenu ? (
                 <Pressable style={styles.menuButton} onPress={onMenuPress}>
-                    <Ionicons name="ellipsis-vertical" size={20} color="#333" />
+                    <Ionicons name="ellipsis-vertical" size={20} color={colors.text} />
                 </Pressable>
             ) : (
                 <View style={styles.spacer} />
@@ -87,20 +93,18 @@ const styles = StyleSheet.create({
         paddingLeft: 20,
         paddingRight: 20,
         paddingVertical: 16,
-        backgroundColor: '#fff',
         borderBottomWidth: 1,
-        borderBottomColor: '#f4f4f5', // zinc-100 equivalent
     },
     avatar: {
         width: 40,
         height: 40,
         borderRadius: 8,
-        backgroundColor: '#009ca3',
+        backgroundColor: '#009ca3', // Keep brand color for avatar
         alignItems: 'center',
         justifyContent: 'center',
     },
     avatarText: {
-        color: '#fff',
+        color: '#fff', // Keep white text on brand color background
         fontSize: 18,
         fontWeight: '600',
     },
@@ -124,7 +128,6 @@ const styles = StyleSheet.create({
     courseTitleText: {
         fontSize: 18,
         fontWeight: '600',
-        color: '#333',
         marginRight: 4,
     },
     titleContainer: {
@@ -136,7 +139,6 @@ const styles = StyleSheet.create({
     titleText: {
         fontSize: 18,
         fontWeight: '600',
-        color: '#333',
     },
     menuButton: {
         width: 44,

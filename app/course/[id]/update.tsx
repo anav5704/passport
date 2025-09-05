@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useCourse } from '@/contexts/CourseContext'
 import { useUser } from '@/contexts/UserContext'
+import { useTheme } from '@/contexts/ThemeContext'
 import Header from '@/components/Header'
 import Button from '@/components/Button'
 import TextInput from '@/components/TextInput'
@@ -13,6 +14,7 @@ export default function UpdateCourseScreen() {
     const { id } = useLocalSearchParams<{ id: string }>()
     const { updateCourseCode } = useCourse()
     const { user } = useUser()
+    const { colors, actualTheme } = useTheme()
     const insets = useSafeAreaInsets()
     const [courseCode, setCourseCode] = useState('')
     const [isLoading, setIsLoading] = useState(false)
@@ -50,8 +52,8 @@ export default function UpdateCourseScreen() {
     }
 
     return (
-        <View style={styles.container}>
-            <StatusBar style="dark" translucent />
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
+            <StatusBar style={actualTheme === 'dark' ? 'light' : 'dark'} translucent />
 
             <Header
                 title="Edit Course"
@@ -63,7 +65,7 @@ export default function UpdateCourseScreen() {
             {/* Content */}
             <View style={styles.content}>
                 <View style={styles.topSection}>
-                    <Text style={styles.label}>Course Code</Text>
+                    <Text style={[styles.label, { color: colors.text }]}>Course Code</Text>
                     <TextInput
                         value={courseCode}
                         onChangeText={setCourseCode}
@@ -91,7 +93,6 @@ export default function UpdateCourseScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
     },
     content: {
         flex: 1,
@@ -105,7 +106,6 @@ const styles = StyleSheet.create({
     label: {
         fontSize: 16,
         fontWeight: '500',
-        color: '#333',
         marginBottom: 12,
     },
     bottomSection: {

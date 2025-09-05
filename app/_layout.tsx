@@ -10,11 +10,13 @@ import { db } from '@database'
 import { UserProvider } from '@/contexts/UserContext'
 import { CourseProvider } from '@/contexts/CourseContext'
 import { SheetProvider } from '@/contexts/SheetContext'
+import { ThemeProvider, useTheme } from '@/contexts/ThemeContext'
 import { useUser } from '@/contexts/UserContext'
 import { useEffect } from 'react'
 
 function RootLayoutNav() {
     const { user, isLoading, isOnboardingComplete } = useUser()
+    const { colors, actualTheme } = useTheme()
     const insets = useSafeAreaInsets()
     const segments = useSegments()
     const router = useRouter()
@@ -31,7 +33,12 @@ function RootLayoutNav() {
         }
     }, [isOnboardingComplete, isLoading, segments])
 
-    return <Slot />
+    return (
+        <>
+            <Slot />
+            <StatusBar style={actualTheme === 'dark' ? 'light' : 'dark'} translucent />
+        </>
+    )
 }
 
 export default function RootLayout() {
@@ -39,45 +46,66 @@ export default function RootLayout() {
 
     if (error) {
         return (
-            <SafeAreaView style={styles.container} edges={[]}>
-                <Text style={styles.errorText}>Migration error: {error.message}</Text>
-                <StatusBar style="dark" translucent />
-            </SafeAreaView>
+            <ThemeProvider>
+                <ThemedErrorView error={error} />
+            </ThemeProvider>
         )
     }
 
     if (!success) {
         return (
-            <SafeAreaView style={styles.container} edges={[]}>
-                <Text style={styles.loadingText}>Migration is in progress...</Text>
-                <StatusBar style="dark" translucent />
-            </SafeAreaView>
+            <ThemeProvider>
+                <ThemedLoadingView />
+            </ThemeProvider>
         )
     }
 
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
-            <UserProvider>
-                <CourseProvider>
-                    <SheetProvider>
-                        <SafeAreaView style={styles.container} edges={[]}>
-                            <RootLayoutNav />
-                            <StatusBar style="dark" translucent />
-                        </SafeAreaView>
-                    </SheetProvider>
-                </CourseProvider>
-            </UserProvider>
+            <ThemeProvider>
+                <UserProvider>
+                    <CourseProvider>
+                        <SheetProvider>
+                            <SafeAreaView style={styles.container} edges={[]}>
+                                <RootLayoutNav />
+                            </SafeAreaView>
+                        </SheetProvider>
+                    </CourseProvider>
+                </UserProvider>
+            </ThemeProvider>
         </GestureHandlerRootView>
+    )
+}
+
+function ThemedErrorView({ error }: { error: Error }) {
+    const { colors, actualTheme } = useTheme()
+    return (
+        <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={[]}>
+            <Text style={[styles.errorText, { color: colors.danger }]}>
+                Migration error: {error.message}
+            </Text>
+            <StatusBar style={actualTheme === 'dark' ? 'light' : 'dark'} translucent />
+        </SafeAreaView>
+    )
+}
+
+function ThemedLoadingView() {
+    const { colors, actualTheme } = useTheme()
+    return (
+        <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={[]}>
+            <Text style={[styles.loadingText, { color: colors.text }]}>
+                Migration is in progress...
+            </Text>
+            <StatusBar style={actualTheme === 'dark' ? 'light' : 'dark'} translucent />
+        </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
     },
     errorText: {
-        color: 'red',
         fontSize: 16,
         textAlign: 'center',
         margin: 20,

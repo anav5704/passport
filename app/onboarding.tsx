@@ -14,6 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { setupUserWithCourse } from '@database/queries'
 import { StatusBar } from 'expo-status-bar'
 import { useUser } from '@/contexts/UserContext'
+import { useTheme } from '@/contexts/ThemeContext'
 import { router } from 'expo-router'
 import TextInput from '@/components/TextInput'
 
@@ -22,6 +23,7 @@ export default function OnboardingScreen() {
     const [courseCode, setCourseCode] = useState('')
     const [isLoading, setIsLoading] = useState(false)
     const { refreshUser } = useUser()
+    const { colors, actualTheme } = useTheme()
 
     // Refs for TextInput components
     const nameInputRef = useRef<RNTextInput>(null)
@@ -68,8 +70,8 @@ export default function OnboardingScreen() {
     }
 
     return (
-        <SafeAreaView style={styles.container} edges={[]}>
-            <StatusBar style="dark" translucent />
+        <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={[]}>
+            <StatusBar style={actualTheme === 'dark' ? 'light' : 'dark'} translucent />
             <KeyboardAvoidingView
                 style={styles.container}
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -81,15 +83,15 @@ export default function OnboardingScreen() {
                 >
                     {/* Header */}
                     <View style={styles.header}>
-                        <Text style={styles.title}>Welcome to PASSport</Text>
-                        <Text style={styles.subtitle}>
+                        <Text style={[styles.title, { color: colors.text }]}>Welcome to PASSport</Text>
+                        <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
                             Let's set up your account to start tracking attendance for your PASS sessions
                         </Text>
                     </View>
 
                     {/* Leader Name Section */}
                     <View style={styles.section}>
-                        <Text style={styles.label}>Your Name</Text>
+                        <Text style={[styles.label, { color: colors.text }]}>Your Name</Text>
                         <TextInput
                             ref={nameInputRef}
                             value={leaderName}
@@ -101,7 +103,7 @@ export default function OnboardingScreen() {
 
                     {/* Courses Section */}
                     <View style={styles.section}>
-                        <Text style={styles.label}>Course Code</Text>
+                        <Text style={[styles.label, { color: colors.text }]}>Course Code</Text>
 
                         <TextInput
                             ref={courseInputRef}
