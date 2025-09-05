@@ -13,7 +13,7 @@ export default function DeleteCourseScreen() {
     const { id } = useLocalSearchParams<{ id: string }>()
     const { removeCourse } = useCourse()
     const { user } = useUser()
-    const { colors, actualTheme } = useTheme()
+    const { colors, themeMode } = useTheme()
     const insets = useSafeAreaInsets()
     const [courseName, setCourseName] = useState('')
     const [isLoading, setIsLoading] = useState(false)
@@ -63,7 +63,7 @@ export default function DeleteCourseScreen() {
 
     return (
         <View style={[styles.container, { backgroundColor: colors.background }]}>
-            <StatusBar style={actualTheme === 'dark' ? 'light' : 'dark'} translucent />
+            <StatusBar style={themeMode === 'dark' ? 'light' : 'dark'} translucent />
 
             <Header
                 title="Delete Course"

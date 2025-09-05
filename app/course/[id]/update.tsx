@@ -14,7 +14,7 @@ export default function UpdateCourseScreen() {
     const { id } = useLocalSearchParams<{ id: string }>()
     const { updateCourseCode } = useCourse()
     const { user } = useUser()
-    const { colors, actualTheme } = useTheme()
+    const { colors, themeMode } = useTheme()
     const insets = useSafeAreaInsets()
     const [courseCode, setCourseCode] = useState('')
     const [isLoading, setIsLoading] = useState(false)
@@ -53,7 +53,7 @@ export default function UpdateCourseScreen() {
 
     return (
         <View style={[styles.container, { backgroundColor: colors.background }]}>
-            <StatusBar style={actualTheme === 'dark' ? 'light' : 'dark'} translucent />
+            <StatusBar style={themeMode === 'dark' ? 'light' : 'dark'} translucent />
 
             <Header
                 title="Edit Course"

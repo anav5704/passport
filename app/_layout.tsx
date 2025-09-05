@@ -16,7 +16,7 @@ import { useEffect } from 'react'
 
 function RootLayoutNav() {
     const { user, isLoading, isOnboardingComplete } = useUser()
-    const { colors, actualTheme } = useTheme()
+    const { colors, themeMode } = useTheme()
     const insets = useSafeAreaInsets()
     const segments = useSegments()
     const router = useRouter()
@@ -36,7 +36,7 @@ function RootLayoutNav() {
     return (
         <>
             <Slot />
-            <StatusBar style={actualTheme === 'dark' ? 'light' : 'dark'} translucent />
+            <StatusBar style={themeMode === 'dark' ? 'light' : 'dark'} translucent />
         </>
     )
 }
@@ -78,25 +78,25 @@ export default function RootLayout() {
 }
 
 function ThemedErrorView({ error }: { error: Error }) {
-    const { colors, actualTheme } = useTheme()
+    const { colors, themeMode } = useTheme()
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={[]}>
             <Text style={[styles.errorText, { color: colors.danger }]}>
                 Migration error: {error.message}
             </Text>
-            <StatusBar style={actualTheme === 'dark' ? 'light' : 'dark'} translucent />
+            <StatusBar style={themeMode === 'dark' ? 'light' : 'dark'} translucent />
         </SafeAreaView>
     )
 }
 
 function ThemedLoadingView() {
-    const { colors, actualTheme } = useTheme()
+    const { colors, themeMode } = useTheme()
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={[]}>
             <Text style={[styles.loadingText, { color: colors.text }]}>
                 Migration is in progress...
             </Text>
-            <StatusBar style={actualTheme === 'dark' ? 'light' : 'dark'} translucent />
+            <StatusBar style={themeMode === 'dark' ? 'light' : 'dark'} translucent />
         </SafeAreaView>
     )
 }

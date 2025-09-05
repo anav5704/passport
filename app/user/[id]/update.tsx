@@ -12,7 +12,7 @@ import TextInput from '@/components/TextInput'
 export default function UpdateUserScreen() {
     const { id } = useLocalSearchParams<{ id: string }>()
     const { user, updateUserName } = useUser()
-    const { colors, actualTheme } = useTheme()
+    const { colors, themeMode } = useTheme()
     const insets = useSafeAreaInsets()
     const [name, setName] = useState(user?.name || '')
     const [isLoading, setIsLoading] = useState(false)
@@ -48,7 +48,7 @@ export default function UpdateUserScreen() {
 
     return (
         <View style={[styles.container, { backgroundColor: colors.background }]}>
-            <StatusBar style={actualTheme === 'dark' ? 'light' : 'dark'} translucent />
+            <StatusBar style={themeMode === 'dark' ? 'light' : 'dark'} translucent />
 
             <Header
                 title="Edit Name"

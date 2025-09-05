@@ -15,7 +15,7 @@ import CourseSettingsSheet from '@/components/sheets/CourseSettingsSheet'
 export default function Index() {
     const { user, isLoading } = useUser()
     const { currentCourse } = useCourse()
-    const { colors, actualTheme } = useTheme()
+    const { colors, themeMode } = useTheme()
     const insets = useSafeAreaInsets()
     const [attendanceHistory, setAttendanceHistory] = useState<any[]>([])
     const [isLoadingAttendance, setIsLoadingAttendance] = useState(false)

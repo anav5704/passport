@@ -23,7 +23,7 @@ export default function OnboardingScreen() {
     const [courseCode, setCourseCode] = useState('')
     const [isLoading, setIsLoading] = useState(false)
     const { refreshUser } = useUser()
-    const { colors, actualTheme } = useTheme()
+    const { colors, themeMode } = useTheme()
 
     // Refs for TextInput components
     const nameInputRef = useRef<RNTextInput>(null)
@@ -71,7 +71,7 @@ export default function OnboardingScreen() {
 
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={[]}>
-            <StatusBar style={actualTheme === 'dark' ? 'light' : 'dark'} translucent />
+            <StatusBar style={themeMode === 'dark' ? 'light' : 'dark'} translucent />
             <KeyboardAvoidingView
                 style={styles.container}
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}

@@ -1,14 +1,10 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, { createContext, useContext } from 'react'
 import { useColorScheme } from 'react-native'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 
-type ThemeMode = 'light' | 'dark' | 'system'
-type ActualTheme = 'light' | 'dark'
+type ThemeMode = 'light' | 'dark'
 
 interface ThemeContextType {
     themeMode: ThemeMode
-    actualTheme: ActualTheme
-    setThemeMode: (mode: ThemeMode) => Promise<void>
     colors: {
         background: string
         surface: string
@@ -45,48 +41,15 @@ const darkColors = {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
-const THEME_STORAGE_KEY = '@theme_mode'
-
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-    const [themeMode, setThemeModeState] = useState<ThemeMode>('system')
     const systemColorScheme = useColorScheme()
 
-    // Determine the actual theme based on mode and system preference
-    const actualTheme: ActualTheme = themeMode === 'system'
-        ? (systemColorScheme || 'light')
-        : themeMode as ActualTheme
-
-    const colors = actualTheme === 'dark' ? darkColors : lightColors
-
-    // Load theme preference from storage on mount
-    useEffect(() => {
-        const loadTheme = async () => {
-            try {
-                const savedTheme = await AsyncStorage.getItem(THEME_STORAGE_KEY)
-                if (savedTheme && ['light', 'dark', 'system'].includes(savedTheme)) {
-                    setThemeModeState(savedTheme as ThemeMode)
-                }
-            } catch (error) {
-                console.error('Failed to load theme preference:', error)
-            }
-        }
-        loadTheme()
-    }, [])
-
-    const setThemeMode = async (mode: ThemeMode) => {
-        try {
-            await AsyncStorage.setItem(THEME_STORAGE_KEY, mode)
-            setThemeModeState(mode)
-        } catch (error) {
-            console.error('Failed to save theme preference:', error)
-            throw error
-        }
-    }
+    // Always follow system theme
+    const themeMode: ThemeMode = systemColorScheme === 'dark' ? 'dark' : 'light'
+    const colors = themeMode === 'dark' ? darkColors : lightColors
 
     const value: ThemeContextType = {
         themeMode,
-        actualTheme,
-        setThemeMode,
         colors,
     }
 

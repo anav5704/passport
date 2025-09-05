@@ -16,7 +16,7 @@ import Button from '@/components/Button'
 export default function AttendanceExportScreen() {
     const { id } = useLocalSearchParams<{ id: string }>()
     const { user } = useUser()
-    const { colors, actualTheme } = useTheme()
+    const { colors, themeMode } = useTheme()
     const insets = useSafeAreaInsets()
     const [courseName, setCourseName] = useState('')
     const [isLoading, setIsLoading] = useState(false)
@@ -133,7 +133,7 @@ export default function AttendanceExportScreen() {
 
     return (
         <View style={[styles.container, { backgroundColor: colors.background }]}>
-            <StatusBar style={actualTheme === 'dark' ? 'light' : 'dark'} translucent />
+            <StatusBar style={themeMode === 'dark' ? 'light' : 'dark'} translucent />
 
             <Header
                 title="Attendance"

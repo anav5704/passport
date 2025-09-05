@@ -21,22 +21,11 @@ const GeneralSettingsSheet = forwardRef<BaseSheetRef, {}>((props, ref) => {
         router.push(`/user/${user.id}/update`)
     }
 
-    const handleChangeTheme = () => {
-        // Close the sheet first, then navigate to theme screen
-        if (ref && 'current' in ref && ref.current) {
-            ref.current.close()
-        }
-        router.push('/theme')
-    }
-
     return (
         <BaseSheet ref={ref}>
             <Text style={[styles.title, { color: colors.text }]}>General Settings</Text>
             <Pressable style={styles.item} onPress={handleEditName}>
                 <Text style={[styles.itemText, { color: colors.text }]}>Edit Name</Text>
-            </Pressable>
-            <Pressable style={styles.item} onPress={handleChangeTheme}>
-                <Text style={[styles.itemText, { color: colors.text }]}>Change Theme</Text>
             </Pressable>
         </BaseSheet>
     )
