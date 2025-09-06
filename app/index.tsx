@@ -29,6 +29,21 @@ export default function Index() {
         closeAllSheets
     } = useSheet()
 
+    // Function to format timestamp as "6 Sep, 10.00am"
+    const formatTimestamp = (timestamp: string) => {
+        const date = new Date(timestamp)
+        const day = date.getDate().toString() // Remove padStart to avoid leading zeros
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        const month = months[date.getMonth()]
+        const hours24 = date.getHours()
+        const minutes = date.getMinutes()
+        const ampm = hours24 >= 12 ? 'pm' : 'am'
+        const displayHours = hours24 === 0 ? 12 : (hours24 > 12 ? hours24 - 12 : hours24)
+        const displayMinutes = minutes.toString().padStart(2, '0')
+        return `${day} ${month}, ${displayHours}.${displayMinutes}${ampm}`
+    }
+
     useEffect(() => {
         const fetchAttendanceHistory = async () => {
             if (!currentCourse) {
@@ -126,7 +141,7 @@ export default function Index() {
                                     index < attendanceHistory.length - 1 && styles.attendanceItemWithMargin
                                 ]}>
                                     <Text style={[styles.studentId, { color: colors.text }]}>{item.studentId}</Text>
-                                    <Text style={[styles.timestamp, { color: colors.textSecondary }]}>{new Date(item.timestamp).toLocaleString()}</Text>
+                                    <Text style={[styles.timestamp, { color: colors.textSecondary }]}>{formatTimestamp(item.timestamp)}</Text>
                                 </View>
                             )}
                             style={styles.attendanceList}
