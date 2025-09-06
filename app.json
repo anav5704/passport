@@ -19,10 +19,7 @@
                 "backgroundColor": "#ffffff"
             },
             "edgeToEdgeEnabled": true,
-            "package": "com.anav5704.passport",
-            "androidNavigationBar": {
-                "enforceContrast": false
-            }
+            "package": "com.anav5704.passport"
         },
         "plugins": [
             "expo-sqlite",
@@ -43,6 +40,14 @@
                 "expo-camera",
                 {
                     "cameraPermission": "Allow PASSport to access your camera to scan student IDs."
+                }
+            ],
+            [
+                "react-native-edge-to-edge",
+                {
+                    "android": {
+                        "enforceNavigationBarContrast": false
+                    }
                 }
             ],
             "expo-font"
