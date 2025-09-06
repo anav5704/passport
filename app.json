@@ -19,7 +19,10 @@
                 "backgroundColor": "#ffffff"
             },
             "edgeToEdgeEnabled": true,
-            "package": "com.anav5704.passport"
+            "package": "com.anav5704.passport",
+            "androidNavigationBar": {
+                "enforceContrast": false
+            }
         },
         "plugins": [
             "expo-sqlite",
