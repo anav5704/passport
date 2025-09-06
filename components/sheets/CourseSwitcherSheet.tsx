@@ -53,7 +53,7 @@ const CourseSwitcherSheet = forwardRef<BaseSheetRef, {}>((props, ref) => {
 
     const handleAddCourse = () => {
         closeAllSheets()
-        router.push('/course/new')
+        router.push('/course/create')
     }
 
     return (

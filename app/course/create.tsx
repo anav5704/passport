@@ -8,7 +8,7 @@ import Header from '@/components/Header'
 import Button from '@/components/Button'
 import TextInput from '@/components/TextInput'
 
-export default function NewCourseScreen() {
+export default function CreateCourseScreen() {
     const { addCourse } = useCourse()
     const { colors, themeMode } = useTheme()
     const insets = useSafeAreaInsets()
