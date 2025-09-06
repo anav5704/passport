@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, Alert, Platform } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
+import Constants from 'expo-constants'
 import * as FileSystem from 'expo-file-system'
 import * as Sharing from 'expo-sharing'
 import * as XLSX from 'xlsx'
@@ -73,11 +74,11 @@ export default function AttendanceExportScreen() {
 
     const generateExcel = () => {
         const data = attendanceData.map(attendance => ({
-            'Course': courseName,
-            'Leader': user?.name || '',
             'Date': formatDate(attendance.timestamp),
             'Time': formatTime(attendance.timestamp),
-            'Student ID': attendance.studentId
+            'Student': attendance.studentId,
+            'Course': courseName,
+            'Leader': user?.name || '',
         }))
 
         const worksheet = XLSX.utils.json_to_sheet(data)
@@ -88,11 +89,32 @@ export default function AttendanceExportScreen() {
             { wch: 15 },  // Leader column
             { wch: 15 },  // Date column
             { wch: 15 },  // Time column
-            { wch: 15 }   // Student ID column
+            { wch: 30 }   // Student ID column
         ]
+
+        // Get admin password from environment variables
+        const adminPassword = process.env.EXPO_PUBLIC_ADMIN_PASSWORD
 
         const workbook = XLSX.utils.book_new()
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Attendance')
+
+        // Add password protection to the worksheet
+        worksheet['!protect'] = {
+            password: adminPassword,
+            selectLockedCells: false,
+            selectUnlockedCells: false,
+            formatCells: false,
+            formatColumns: false,
+            formatRows: false,
+            insertColumns: false,
+            insertRows: false,
+            insertHyperlinks: false,
+            deleteColumns: false,
+            deleteRows: false,
+            sort: false,
+            autoFilter: false,
+            pivotTables: false
+        }
 
         return XLSX.write(workbook, { type: 'base64', bookType: 'xlsx' })
     }
