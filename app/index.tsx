@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, FlatList } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
+import { FlashList } from '@shopify/flash-list'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useUser } from '@/contexts/UserContext'
 import { useCourse } from '@/contexts/CourseContext'
@@ -131,7 +132,7 @@ export default function Index() {
                 {/* Attendance History */}
                 <View style={styles.statsSection}>
                     {currentCourse && attendanceHistory.length > 0 && !isLoadingAttendance && (
-                        <FlatList
+                        <FlashList
                             data={attendanceHistory}
                             keyExtractor={(item, index) => `${item.id}-${item.studentId}-${index}`}
                             renderItem={({ item, index }) => (
