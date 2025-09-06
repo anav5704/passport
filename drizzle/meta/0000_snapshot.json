@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "9fd01e4c-c6db-473c-b10d-dfa4c6539cbe",
+  "id": "e734b267-e098-43e3-8e3d-687e78d92e35",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "attendance": {
@@ -32,9 +32,8 @@
           "name": "timestamp",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "CURRENT_TIMESTAMP"
+          "notNull": true,
+          "autoincrement": false
         }
       },
       "indexes": {},

@@ -34,7 +34,7 @@ export const attendance = sqliteTable("attendance", {
     courseId: integer("course_id")
         .notNull()
         .references(() => courses.id),
-    timestamp: text("timestamp").default(sql`CURRENT_TIMESTAMP`),
+    timestamp: text("timestamp").notNull(),
 });
 
 // Define relationships

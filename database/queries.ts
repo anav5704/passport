@@ -184,11 +184,13 @@ export const updateStudentSignature = async (
 
 // Attendance queries
 export const logAttendance = async (studentId: number, courseId: number) => {
+    const timestamp = new Date().toISOString();
     const [attendanceRecord] = await db
         .insert(attendance)
         .values({
             studentId,
             courseId,
+            timestamp,
         })
         .returning();
     return attendanceRecord;

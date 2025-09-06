@@ -2,7 +2,7 @@ CREATE TABLE `attendance` (
 	`attendance_id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`student_id` integer NOT NULL,
 	`course_id` integer NOT NULL,
-	`timestamp` text DEFAULT CURRENT_TIMESTAMP,
+	`timestamp` text NOT NULL,
 	FOREIGN KEY (`student_id`) REFERENCES `students`(`id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`course_id`) REFERENCES `courses`(`id`) ON UPDATE no action ON DELETE no action
 );
