@@ -47,7 +47,7 @@ const BaseSheet = forwardRef<BaseSheetRef, BaseSheetProps>(
                 <BottomSheetView style={[
                     styles.content,
                     {
-                        paddingBottom: insets.bottom,
+                        paddingBottom: insets.bottom + 6,
                         backgroundColor: colors.surface
                     }
                 ]}>
