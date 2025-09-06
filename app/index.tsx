@@ -132,23 +132,25 @@ export default function Index() {
                 {/* Attendance History */}
                 <View style={styles.statsSection}>
                     {currentCourse && attendanceHistory.length > 0 && !isLoadingAttendance && (
-                        <FlashList
-                            data={attendanceHistory}
-                            keyExtractor={(item, index) => `${item.id}-${item.studentId}-${index}`}
-                            renderItem={({ item, index }) => (
-                                <View style={[
-                                    styles.attendanceItem,
-                                    { backgroundColor: colors.surface, borderColor: colors.border },
-                                    index < attendanceHistory.length - 1 && styles.attendanceItemWithMargin
-                                ]}>
-                                    <Text style={[styles.studentId, { color: colors.text }]}>{item.studentId}</Text>
-                                    <Text style={[styles.timestamp, { color: colors.textSecondary }]}>{formatTimestamp(item.timestamp)}</Text>
-                                </View>
-                            )}
-                            style={styles.attendanceList}
-                            contentContainerStyle={{ paddingBottom: insets.bottom }}
-                            showsVerticalScrollIndicator={false}
-                        />
+                        <View style={styles.attendanceList}>
+                            <FlashList
+                                data={attendanceHistory}
+                                keyExtractor={(item, index) => `${item.id}-${item.studentId}-${index}`}
+                                estimatedItemSize={100}
+                                renderItem={({ item, index }) => (
+                                    <View style={[
+                                        styles.attendanceItem,
+                                        { backgroundColor: colors.surface, borderColor: colors.border },
+                                        index < attendanceHistory.length - 1 && styles.attendanceItemWithMargin
+                                    ]}>
+                                        <Text style={[styles.studentId, { color: colors.text }]}>{item.studentId}</Text>
+                                        <Text style={[styles.timestamp, { color: colors.textSecondary }]}>{formatTimestamp(item.timestamp)}</Text>
+                                    </View>
+                                )}
+                                contentContainerStyle={{ paddingBottom: insets.bottom }}
+                                showsVerticalScrollIndicator={false}
+                            />
+                        </View>
                     )}
                 </View>
             </View>
