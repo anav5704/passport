@@ -17,6 +17,7 @@ import { useUser } from '@/contexts/UserContext'
 import { useTheme } from '@/contexts/ThemeContext'
 import { router } from 'expo-router'
 import TextInput from '@/components/TextInput'
+import Button from '@/components/Button'
 
 export default function OnboardingScreen() {
     const [leaderName, setLeaderName] = useState('')
@@ -73,7 +74,7 @@ export default function OnboardingScreen() {
         <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={[]}>
             <StatusBar style={themeMode === 'dark' ? 'light' : 'dark'} translucent />
             <KeyboardAvoidingView
-                style={styles.container}
+                style={[styles.container, { backgroundColor: colors.background }]}
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             >
                 <ScrollView
@@ -115,15 +116,13 @@ export default function OnboardingScreen() {
                     </View>
 
                     {/* Complete Button */}
-                    <Pressable
-                        style={styles.completeButton}
+                    <Button
+                        title="Complete Setup"
                         onPress={handleComplete}
+                        isLoading={isLoading}
+                        loadingText="Setting up..."
                         disabled={isLoading}
-                    >
-                        <Text style={styles.completeButtonText}>
-                            {isLoading ? 'Setting up...' : 'Complete Setup'}
-                        </Text>
-                    </Pressable>
+                    />
                 </ScrollView>
             </KeyboardAvoidingView>
         </SafeAreaView>
@@ -133,7 +132,6 @@ export default function OnboardingScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
     },
     scrollView: {
         flex: 1,
@@ -150,13 +148,11 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 28,
         fontWeight: '700',
-        color: '#1a1a1a',
         marginBottom: 8,
         textAlign: 'center',
     },
     subtitle: {
         fontSize: 16,
-        color: '#666',
         textAlign: 'center',
         lineHeight: 22,
     },
@@ -166,19 +162,6 @@ const styles = StyleSheet.create({
     label: {
         fontSize: 18,
         fontWeight: '600',
-        color: '#1a1a1a',
         marginBottom: 8,
-    },
-    completeButton: {
-        backgroundColor: '#009ca3',
-        borderRadius: 12,
-        padding: 18,
-        alignItems: 'center',
-        marginTop: 24,
-    },
-    completeButtonText: {
-        color: 'white',
-        fontSize: 18,
-        fontWeight: '600',
     },
 })
