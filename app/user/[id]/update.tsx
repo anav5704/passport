@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { View, Text, StyleSheet, Alert } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { StatusBar } from 'expo-status-bar'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useUser } from '@/contexts/UserContext'
 import { useTheme } from '@/contexts/ThemeContext'
@@ -48,8 +47,6 @@ export default function UpdateUserScreen() {
 
     return (
         <View style={[styles.container, { backgroundColor: colors.background }]}>
-            <StatusBar style={themeMode === 'dark' ? 'light' : 'dark'} translucent />
-
             <Header
                 title="Edit Name"
                 showBackButton={true}

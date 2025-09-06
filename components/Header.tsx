@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, View, Pressable, Platform, StatusBar } from 'react-native'
+import { StyleSheet, Text, View, Pressable, Platform } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useUser } from '@/contexts/UserContext'
@@ -49,7 +49,7 @@ export default function Header({
             {/* Left side - Avatar or Back Button */}
             {showBackButton ? (
                 <Pressable style={styles.backButton} onPress={handleBackPress}>
-                    <Ionicons name="arrow-back" size={24} color={colors.text} />
+                    <Ionicons name="arrow-back" size={24} color={colors.success} />
                 </Pressable>
             ) : showAvatar ? (
                 <Pressable style={styles.avatar} onPress={onAvatarPress}>

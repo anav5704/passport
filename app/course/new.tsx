@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { View, Text, StyleSheet, Alert } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { StatusBar } from 'expo-status-bar'
 import { router } from 'expo-router'
 import { useCourse } from '@/contexts/CourseContext'
 import { useTheme } from '@/contexts/ThemeContext'
@@ -36,8 +35,6 @@ export default function NewCourseScreen() {
 
     return (
         <View style={[styles.container, { backgroundColor: colors.background }]}>
-            <StatusBar style={themeMode === 'dark' ? 'light' : 'dark'} translucent />
-
             <Header
                 title="Add Course"
                 showBackButton={true}

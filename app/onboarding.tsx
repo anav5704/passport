@@ -12,7 +12,6 @@ import {
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { setupUserWithCourse } from '@database/queries'
-import { StatusBar } from 'expo-status-bar'
 import { useUser } from '@/contexts/UserContext'
 import { useTheme } from '@/contexts/ThemeContext'
 import { router } from 'expo-router'
@@ -72,7 +71,6 @@ export default function OnboardingScreen() {
 
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={[]}>
-            <StatusBar style={themeMode === 'dark' ? 'light' : 'dark'} translucent />
             <KeyboardAvoidingView
                 style={[styles.container, { backgroundColor: colors.background }]}
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}

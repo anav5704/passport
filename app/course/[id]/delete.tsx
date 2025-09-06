@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, Alert } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { StatusBar } from 'expo-status-bar'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useCourse } from '@/contexts/CourseContext'
 import { useUser } from '@/contexts/UserContext'
@@ -63,8 +62,6 @@ export default function DeleteCourseScreen() {
 
     return (
         <View style={[styles.container, { backgroundColor: colors.background }]}>
-            <StatusBar style={themeMode === 'dark' ? 'light' : 'dark'} translucent />
-
             <Header
                 title="Delete Course"
                 showBackButton={true}

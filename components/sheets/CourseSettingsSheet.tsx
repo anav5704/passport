@@ -42,7 +42,7 @@ const CourseSettingsSheet = forwardRef<BaseSheetRef, {}>((props, ref) => {
                 <Text style={[styles.itemText, { color: colors.text }]}>Edit Course</Text>
             </Pressable>
             <Pressable style={styles.item} onPress={handleDeleteCourse}>
-                <Text style={[styles.itemText, { color: colors.danger }]}>
+                <Text style={[styles.itemText, { color: '#f43f5e' }]}>
                     Delete Course
                 </Text>
             </Pressable>

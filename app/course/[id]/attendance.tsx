@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, Alert, Platform } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { StatusBar } from 'expo-status-bar'
 import { router, useLocalSearchParams } from 'expo-router'
 import * as FileSystem from 'expo-file-system'
 import * as Sharing from 'expo-sharing'
@@ -133,8 +132,6 @@ export default function AttendanceExportScreen() {
 
     return (
         <View style={[styles.container, { backgroundColor: colors.background }]}>
-            <StatusBar style={themeMode === 'dark' ? 'light' : 'dark'} translucent />
-
             <Header
                 title="Attendance"
                 showBackButton={true}
