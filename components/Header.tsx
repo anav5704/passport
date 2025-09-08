@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, View, Pressable, Platform } from 'react-native'
-import { Ionicons } from '@expo/vector-icons'
+import { ArrowLeft, Plus, Menu } from 'lucide-react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useUser } from '@/contexts/UserContext'
 import { useTheme } from '@/contexts/ThemeContext'
@@ -55,7 +55,7 @@ export default function Header({
             {/* Left side - Avatar or Back Button */}
             {showBackButton ? (
                 <Pressable style={styles.backButton} onPress={handleBackPress}>
-                    <Ionicons name="arrow-back" size={24} color={colors.success} />
+                    <ArrowLeft size={24} color={colors.success} />
                 </Pressable>
             ) : showAvatar ? (
                 <Pressable style={styles.avatar} onPress={onAvatarPress}>
@@ -84,11 +84,11 @@ export default function Header({
             {showMenu ? (
                 hasNoCourses ? (
                     <Pressable style={styles.menuButton} onPress={handleCreateCoursePress}>
-                        <Ionicons name="add" size={24} color={colors.success} />
+                        <Plus size={24} color="#fff" />
                     </Pressable>
                 ) : (
                     <Pressable style={styles.menuButton} onPress={onMenuPress}>
-                        <Ionicons name="ellipsis-vertical" size={20} color={colors.text} />
+                        <Menu size={24} color={colors.text} />
                     </Pressable>
                 )
             ) : (

@@ -1,5 +1,6 @@
 import React, { forwardRef } from 'react'
 import { StyleSheet, Text, Pressable } from 'react-native'
+import { ArrowDownToLine, Edit, Trash } from 'lucide-react-native'
 import { router } from 'expo-router'
 import { useCourse } from '@/contexts/CourseContext'
 import { useSheet } from '@/contexts/SheetContext'
@@ -36,12 +37,15 @@ const CourseSettingsSheet = forwardRef<BaseSheetRef, {}>((props, ref) => {
         <BaseSheet ref={ref}>
             <Text style={[styles.title, { color: colors.text }]}>Course Settings</Text>
             <Pressable style={styles.item} onPress={handleExportAttendance}>
+                <ArrowDownToLine size={24} color={colors.text} style={styles.icon} />
                 <Text style={[styles.itemText, { color: colors.text }]}>Export Attendance</Text>
             </Pressable>
             <Pressable style={styles.item} onPress={handleEditCourse}>
+                <Edit size={24} color={colors.text} style={styles.icon} />
                 <Text style={[styles.itemText, { color: colors.text }]}>Edit Course</Text>
             </Pressable>
             <Pressable style={styles.item} onPress={handleDeleteCourse}>
+                <Trash size={24} color="#f43f5e" style={styles.icon} />
                 <Text style={[styles.itemText, { color: '#f43f5e' }]}>
                     Delete Course
                 </Text>
@@ -66,6 +70,9 @@ const styles = StyleSheet.create({
     itemText: {
         fontSize: 16,
         flex: 1,
+    },
+    icon: {
+        marginRight: 12,
     },
 })
 

@@ -1,5 +1,6 @@
 import React, { forwardRef } from 'react'
 import { StyleSheet, Text, Pressable } from 'react-native'
+import { BookOpen, Plus } from 'lucide-react-native'
 import { router } from 'expo-router'
 import { useUser } from '@/contexts/UserContext'
 import { useCourse } from '@/contexts/CourseContext'
@@ -65,6 +66,11 @@ const CourseSwitcherSheet = forwardRef<BaseSheetRef, {}>((props, ref) => {
                     style={styles.item}
                     onPress={() => handleCourseSelect(course.id)}
                 >
+                    <BookOpen
+                        size={24}
+                        color={currentCourse?.id === course.id ? colors.success : colors.text}
+                        style={styles.icon}
+                    />
                     <Text style={[
                         styles.itemText,
                         { color: colors.text },
@@ -75,6 +81,7 @@ const CourseSwitcherSheet = forwardRef<BaseSheetRef, {}>((props, ref) => {
                 </Pressable>
             ))}
             <Pressable style={styles.item} onPress={handleAddCourse}>
+                <Plus size={24} color="#fff" style={styles.icon} />
                 <Text style={[styles.itemText, { color: colors.text }]}>
                     Add Course
                 </Text>
@@ -99,6 +106,9 @@ const styles = StyleSheet.create({
     itemText: {
         fontSize: 16,
         flex: 1,
+    },
+    icon: {
+        marginRight: 12,
     },
 })
 
