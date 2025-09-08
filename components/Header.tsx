@@ -15,6 +15,7 @@ interface HeaderProps {
     showBackButton?: boolean
     showAvatar?: boolean
     showMenu?: boolean
+    hasNoCourses?: boolean
 }
 
 export default function Header({
@@ -25,7 +26,8 @@ export default function Header({
     title,
     showBackButton = false,
     showAvatar = true,
-    showMenu = true
+    showMenu = true,
+    hasNoCourses = false
 }: HeaderProps) {
     const { user } = useUser()
     const { colors } = useTheme()
@@ -38,6 +40,10 @@ export default function Header({
 
     const handleBackPress = () => {
         router.back()
+    }
+
+    const handleCreateCoursePress = () => {
+        router.push('/course/create')
     }
 
     return (
@@ -69,16 +75,22 @@ export default function Header({
             ) : (
                 <Pressable style={styles.courseTitle} onPress={onCourseTitlePress}>
                     <Text style={[styles.courseTitleText, { color: colors.text }]}>
-                        {currentCourse?.code || 'Select Course'}
+                        {currentCourse?.code || (hasNoCourses ? 'PASSport' : 'Select Course')}
                     </Text>
                 </Pressable>
             )}
 
-            {/* Right side - Menu or Spacer */}
+            {/* Right side - Menu or Create Course Button */}
             {showMenu ? (
-                <Pressable style={styles.menuButton} onPress={onMenuPress}>
-                    <Ionicons name="ellipsis-vertical" size={20} color={colors.text} />
-                </Pressable>
+                hasNoCourses ? (
+                    <Pressable style={styles.menuButton} onPress={handleCreateCoursePress}>
+                        <Ionicons name="add" size={24} color={colors.success} />
+                    </Pressable>
+                ) : (
+                    <Pressable style={styles.menuButton} onPress={onMenuPress}>
+                        <Ionicons name="ellipsis-vertical" size={20} color={colors.text} />
+                    </Pressable>
+                )
             ) : (
                 <View style={styles.spacer} />
             )}

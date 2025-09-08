@@ -116,18 +116,21 @@ export default function Index() {
                 onAvatarPress={handleAvatarPress}
                 onCourseTitlePress={handleCourseTitlePress}
                 onMenuPress={handleMenuPress}
+                hasNoCourses={user?.courses?.length === 0}
             />
 
             {/* Main Content */}
             <View style={styles.content}>
-                {/* Barcode Scanner */}
-                <View style={styles.scannerSection}>
-                    <BarcodeScanner
-                        isActive={!!currentCourse}
-                        onScanSuccess={(data) => console.log('Scanned:', data)}
-                        onAttendanceLogged={addNewAttendance}
-                    />
-                </View>
+                {/* Barcode Scanner - Only show when there's a current course */}
+                {currentCourse && (
+                    <View style={styles.scannerSection}>
+                        <BarcodeScanner
+                            isActive={!!currentCourse}
+                            onScanSuccess={(data) => console.log('Scanned:', data)}
+                            onAttendanceLogged={addNewAttendance}
+                        />
+                    </View>
+                )}
 
                 {/* Attendance History */}
                 <View style={styles.statsSection}>
