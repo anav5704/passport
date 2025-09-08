@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet, Alert, Platform } from 'react-native'
+import { View, Text, StyleSheet, Alert, Platform, ToastAndroid } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
 import Constants from 'expo-constants'
@@ -142,7 +142,7 @@ export default function AttendanceExportScreen() {
                     dialogTitle: 'Export Attendance Data',
                 })
             } else {
-                Alert.alert('Export Complete', `File saved as: ${fileName}`)
+                ToastAndroid.show(`File saved as: ${fileName}`, ToastAndroid.SHORT)
             }
         } catch (error) {
             console.error('Export error:', error)

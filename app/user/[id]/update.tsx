@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Text, StyleSheet, Alert } from 'react-native'
+import { View, Text, StyleSheet, Alert, ToastAndroid } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useUser } from '@/contexts/UserContext'
@@ -36,7 +36,7 @@ export default function UpdateUserScreen() {
         setIsLoading(true)
         try {
             await updateUserName(name.trim())
-            Alert.alert('Success', 'Name updated successfully')
+            ToastAndroid.show('Name updated successfully', ToastAndroid.SHORT)
             router.back()
         } catch (error) {
             Alert.alert('Error', 'Failed to update name')
@@ -63,7 +63,6 @@ export default function UpdateUserScreen() {
                         onChangeText={setName}
                         placeholder="Enter your name"
                         returnKeyType="done"
-                        onSubmitEditing={handleConfirm}
                     />
                 </View>
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet, Alert } from 'react-native'
+import { View, Text, StyleSheet, Alert, ToastAndroid } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useCourse } from '@/contexts/CourseContext'
@@ -41,7 +41,7 @@ export default function UpdateCourseScreen() {
         setIsLoading(true)
         try {
             await updateCourseCode(parseInt(id), courseCode.trim())
-            Alert.alert('Success', 'Course updated successfully')
+            ToastAndroid.show('Course updated successfully', ToastAndroid.SHORT)
             router.back()
         } catch (error) {
             Alert.alert('Error', 'Failed to update course')
@@ -68,7 +68,6 @@ export default function UpdateCourseScreen() {
                         onChangeText={setCourseCode}
                         placeholder="Enter course code"
                         returnKeyType="done"
-                        onSubmitEditing={handleConfirm}
                         autoCapitalize="characters"
                     />
                 </View>

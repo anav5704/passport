@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet, Alert } from 'react-native'
+import { View, Text, StyleSheet, Alert, ToastAndroid } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useCourse } from '@/contexts/CourseContext'
@@ -32,32 +32,16 @@ export default function DeleteCourseScreen() {
             return
         }
 
-        Alert.alert(
-            'Delete Course',
-            `Are you sure you want to delete "${courseName}"? This action cannot be undone and will remove all associated attendance data.`,
-            [
-                {
-                    text: 'Cancel',
-                    style: 'cancel',
-                },
-                {
-                    text: 'Delete',
-                    style: 'destructive',
-                    onPress: async () => {
-                        setIsLoading(true)
-                        try {
-                            await removeCourse(parseInt(id))
-                            Alert.alert('Success', 'Course deleted successfully')
-                            router.back()
-                        } catch (error) {
-                            Alert.alert('Error', 'Failed to delete course')
-                        } finally {
-                            setIsLoading(false)
-                        }
-                    },
-                },
-            ]
-        )
+        setIsLoading(true)
+        try {
+            await removeCourse(parseInt(id))
+            ToastAndroid.show('Course deleted successfully', ToastAndroid.SHORT)
+            router.back()
+        } catch (error) {
+            Alert.alert('Error', 'Failed to delete course')
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     return (

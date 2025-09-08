@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Text, StyleSheet, Alert } from 'react-native'
+import { View, Text, StyleSheet, Alert, ToastAndroid } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import { useCourse } from '@/contexts/CourseContext'
@@ -24,7 +24,7 @@ export default function CreateCourseScreen() {
         setIsLoading(true)
         try {
             await addCourse(courseCode.trim())
-            Alert.alert('Success', 'Course created successfully')
+            ToastAndroid.show('Course created successfully', ToastAndroid.SHORT)
             router.back()
         } catch (error) {
             Alert.alert('Error', 'Failed to create course')
@@ -51,7 +51,6 @@ export default function CreateCourseScreen() {
                         onChangeText={setCourseCode}
                         placeholder="Enter course code"
                         returnKeyType="done"
-                        onSubmitEditing={handleConfirm}
                         autoCapitalize="characters"
                     />
                 </View>
