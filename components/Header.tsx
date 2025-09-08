@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, View, Pressable, Platform } from 'react-native'
-import { ArrowLeft, Plus, Menu } from 'lucide-react-native'
+import { ArrowLeft, Plus, Menu, ChevronDown } from 'lucide-react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useUser } from '@/contexts/UserContext'
 import { useTheme } from '@/contexts/ThemeContext'
@@ -30,7 +30,7 @@ export default function Header({
     hasNoCourses = false
 }: HeaderProps) {
     const { user } = useUser()
-    const { colors } = useTheme()
+    const { colors, themeMode } = useTheme()
     const insets = useSafeAreaInsets()
 
     // Get first letter of first name for avatar
@@ -72,11 +72,22 @@ export default function Header({
                 <View style={styles.titleContainer}>
                     <Text style={[styles.titleText, { color: colors.text }]}>{title}</Text>
                 </View>
+            ) : hasNoCourses ? (
+                <View style={styles.titleContainer}>
+                    <Text style={[styles.titleText, { color: colors.text }]}>PASSport</Text>
+                </View>
             ) : (
-                <Pressable style={styles.courseTitle} onPress={onCourseTitlePress}>
+                <Pressable
+                    style={[
+                        styles.dropdownTrigger,
+                        { backgroundColor: themeMode === 'dark' ? 'rgba(24, 24, 27, 1.0)' : 'rgba(244, 244, 245, 1.0)' }
+                    ]}
+                    onPress={onCourseTitlePress}
+                >
                     <Text style={[styles.courseTitleText, { color: colors.text }]}>
-                        {currentCourse?.code || (hasNoCourses ? 'PASSport' : 'Select Course')}
+                        {currentCourse?.code || 'Select Course'}
                     </Text>
+                    <ChevronDown size={16} color={colors.text} style={styles.dropdownArrow} />
                 </Pressable>
             )}
 
@@ -84,7 +95,7 @@ export default function Header({
             {showMenu ? (
                 hasNoCourses ? (
                     <Pressable style={styles.menuButton} onPress={handleCreateCoursePress}>
-                        <Plus size={24} color="#fff" />
+                        <Plus size={24} color={themeMode === 'dark' ? '#ffffff' : '#000000'} />
                     </Pressable>
                 ) : (
                     <Pressable style={styles.menuButton} onPress={onMenuPress}>
@@ -138,9 +149,21 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
     },
     courseTitleText: {
-        fontSize: 18,
+        fontSize: 14,
         fontWeight: '600',
         marginRight: 4,
+    },
+    dropdownTrigger: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        alignSelf: 'center',
+        borderRadius: 20,
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+    },
+    dropdownArrow: {
+        marginLeft: 4,
     },
     titleContainer: {
         flex: 1,

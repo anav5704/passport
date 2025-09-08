@@ -12,7 +12,7 @@ const CourseSwitcherSheet = forwardRef<BaseSheetRef, {}>((props, ref) => {
     const { user } = useUser()
     const { currentCourse, setCourse } = useCourse()
     const { closeAllSheets } = useSheet()
-    const { colors } = useTheme()
+    const { colors, themeMode } = useTheme()
 
     // Function to parse course code and extract alphabets and digits for sorting
     const parseCourseCode = (courseCode: string) => {
@@ -81,7 +81,7 @@ const CourseSwitcherSheet = forwardRef<BaseSheetRef, {}>((props, ref) => {
                 </Pressable>
             ))}
             <Pressable style={styles.item} onPress={handleAddCourse}>
-                <Plus size={24} color="#fff" style={styles.icon} />
+                <Plus size={24} color={themeMode === 'dark' ? '#ffffff' : '#000000'} style={styles.icon} />
                 <Text style={[styles.itemText, { color: colors.text }]}>
                     Add Course
                 </Text>
