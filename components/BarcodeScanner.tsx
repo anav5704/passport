@@ -147,11 +147,8 @@ export default function BarcodeScanner({ isActive, onScanSuccess, onAttendanceLo
                 // Call callback to update UI
                 onAttendanceLogged?.(currentStudent.studentId)
 
-                // Vibrate twice for success (new student)
-                await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
-                setTimeout(() => {
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
-                }, 200)
+                // Vibrate once for successful signature scan
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
 
             } else {
                 // Check if signature matches existing student
@@ -161,19 +158,14 @@ export default function BarcodeScanner({ isActive, onScanSuccess, onAttendanceLo
                     // Call callback to update UI
                     onAttendanceLogged?.(currentStudent.studentId)
 
-                    // Vibrate twice for success (signature match)
-                    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
-                    setTimeout(() => {
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
-                    }, 200)
+                    // Vibrate once for successful signature scan
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
 
                 } else {
-                    // One longer vibrate for failure (signature mismatch)
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
+                    // Longer vibration for failure (signature mismatch)
+                    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
                 }
-            }
-
-            resetScanner()
+            } resetScanner()
         } catch (error) {
             throw error
         }
