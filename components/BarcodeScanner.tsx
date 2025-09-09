@@ -26,7 +26,7 @@ export default function BarcodeScanner({ isActive, onScanSuccess, onAttendanceLo
     const [lastScanTime, setLastScanTime] = useState(0)
     const { currentCourse } = useCourse()
 
-    const SCAN_COOLDOWN = 1000 // 1 second between scans
+    const SCAN_COOLDOWN = 1500 // 1.5 seconds between scans
 
     useEffect(() => {
         getCameraPermissions()
@@ -114,6 +114,11 @@ export default function BarcodeScanner({ isActive, onScanSuccess, onAttendanceLo
 
     const handleStudentIdScan = async (studentId: string) => {
         try {
+            // Additional check to prevent duplicate processing
+            if (isProcessing) {
+                return
+            }
+
             // Vibrate once for student ID scan
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
 
@@ -137,6 +142,11 @@ export default function BarcodeScanner({ isActive, onScanSuccess, onAttendanceLo
         try {
             if (!currentStudent) {
                 throw new Error('No student selected')
+            }
+
+            // Additional check to prevent duplicate processing
+            if (isProcessing) {
+                return
             }
 
             if (currentStudent.isNew) {
@@ -165,7 +175,9 @@ export default function BarcodeScanner({ isActive, onScanSuccess, onAttendanceLo
                     // Longer vibration for failure (signature mismatch)
                     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
                 }
-            } resetScanner()
+            }
+
+            resetScanner()
         } catch (error) {
             throw error
         }
