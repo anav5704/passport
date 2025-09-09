@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet, Alert, ToastAndroid } from 'react-native'
+import { View, Text, StyleSheet, ToastAndroid } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useCourse } from '@/contexts/CourseContext'
@@ -29,12 +29,12 @@ export default function UpdateCourseScreen() {
 
     const handleConfirm = async () => {
         if (!courseCode.trim()) {
-            Alert.alert('Error', 'Please enter a valid course code')
+            ToastAndroid.show('Enter a valid course code', ToastAndroid.SHORT)
             return
         }
 
         if (!id) {
-            Alert.alert('Error', 'Course ID not found')
+            ToastAndroid.show('Course ID not found', ToastAndroid.SHORT)
             return
         }
 
@@ -44,7 +44,7 @@ export default function UpdateCourseScreen() {
             ToastAndroid.show('Course updated successfully', ToastAndroid.SHORT)
             router.back()
         } catch (error) {
-            Alert.alert('Error', 'Failed to update course')
+            ToastAndroid.show('Failed to update course', ToastAndroid.SHORT)
         } finally {
             setIsLoading(false)
         }

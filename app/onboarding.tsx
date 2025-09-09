@@ -1,14 +1,14 @@
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 import {
     View,
     Text,
-    TextInput as RNTextInput,
     Pressable,
     StyleSheet,
     ScrollView,
     Alert,
     KeyboardAvoidingView,
     Platform,
+    ToastAndroid,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { setupUserWithCourse } from '@database/queries'
@@ -25,9 +25,9 @@ export default function OnboardingScreen() {
     const { refreshUser } = useUser()
     const { colors, themeMode } = useTheme()
 
-    // Refs for TextInput components
-    const nameInputRef = useRef<RNTextInput>(null)
-    const courseInputRef = useRef<RNTextInput>(null)
+    // Refs for TextInput components - no longer needed for auto-focus
+    // const nameInputRef = useRef<RNTextInput>(null)
+    // const courseInputRef = useRef<RNTextInput>(null)
 
     const updateCourseCode = (value: string) => {
         // Format course code: remove spaces and convert to uppercase
@@ -39,14 +39,14 @@ export default function OnboardingScreen() {
         const isNameValid = leaderName.trim() !== ''
         const isCourseValid = courseCode.trim() !== ''
 
-        // Focus first invalid field
+        // Show toast for first invalid field
         if (!isNameValid) {
-            nameInputRef.current?.focus()
+            ToastAndroid.show('Enter a valid name', ToastAndroid.SHORT)
             return
         }
 
         if (!isCourseValid) {
-            courseInputRef.current?.focus()
+            ToastAndroid.show('Enter a valid course code', ToastAndroid.SHORT)
             return
         }
 
@@ -63,7 +63,7 @@ export default function OnboardingScreen() {
             router.replace('/')
         } catch (error) {
             console.error('Error setting up user:', error)
-            Alert.alert('Error', 'Failed to set up your account. Please try again.')
+            ToastAndroid.show('Setup failed. Try again.', ToastAndroid.SHORT)
         } finally {
             setIsLoading(false)
         }
@@ -92,7 +92,6 @@ export default function OnboardingScreen() {
                     <View style={styles.section}>
                         <Text style={[styles.label, { color: colors.text }]}>Your Name</Text>
                         <TextInput
-                            ref={nameInputRef}
                             value={leaderName}
                             onChangeText={setLeaderName}
                             autoCapitalize="words"
@@ -105,7 +104,6 @@ export default function OnboardingScreen() {
                         <Text style={[styles.label, { color: colors.text }]}>Course Code</Text>
 
                         <TextInput
-                            ref={courseInputRef}
                             value={courseCode}
                             onChangeText={updateCourseCode}
                             autoCapitalize="characters"

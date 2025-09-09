@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet, Alert, Platform, ToastAndroid } from 'react-native'
+import { View, Text, StyleSheet, Platform, ToastAndroid } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
 import Constants from 'expo-constants'
@@ -121,7 +121,7 @@ export default function AttendanceExportScreen() {
 
     const handleExport = async () => {
         if (attendanceData.length === 0) {
-            Alert.alert('No Data', 'There is no attendance data to export for this course.')
+            ToastAndroid.show('No attendance data to export', ToastAndroid.SHORT)
             return
         }
 
@@ -146,7 +146,7 @@ export default function AttendanceExportScreen() {
             }
         } catch (error) {
             console.error('Export error:', error)
-            Alert.alert('Error', 'Failed to export attendance data')
+            ToastAndroid.show('Export failed', ToastAndroid.SHORT)
         } finally {
             setIsLoading(false)
         }

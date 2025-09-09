@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Text, StyleSheet, Alert, ToastAndroid } from 'react-native'
+import { View, Text, StyleSheet, ToastAndroid } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useUser } from '@/contexts/UserContext'
@@ -18,18 +18,18 @@ export default function UpdateUserScreen() {
 
     const handleConfirm = async () => {
         if (!name.trim()) {
-            Alert.alert('Error', 'Please enter a valid name')
+            ToastAndroid.show('Enter a valid name', ToastAndroid.SHORT)
             return
         }
 
         if (!user) {
-            Alert.alert('Error', 'User not found')
+            ToastAndroid.show('User not found', ToastAndroid.SHORT)
             return
         }
 
         // Verify the ID matches the current user
         if (id && parseInt(id) !== user.id) {
-            Alert.alert('Error', 'Invalid user ID')
+            ToastAndroid.show('Invalid user ID', ToastAndroid.SHORT)
             return
         }
 
@@ -39,7 +39,7 @@ export default function UpdateUserScreen() {
             ToastAndroid.show('Name updated successfully', ToastAndroid.SHORT)
             router.back()
         } catch (error) {
-            Alert.alert('Error', 'Failed to update name')
+            ToastAndroid.show('Failed to update name', ToastAndroid.SHORT)
         } finally {
             setIsLoading(false)
         }

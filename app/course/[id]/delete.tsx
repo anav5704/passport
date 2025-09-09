@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet, Alert, ToastAndroid } from 'react-native'
+import { View, Text, StyleSheet, ToastAndroid } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useCourse } from '@/contexts/CourseContext'
@@ -28,7 +28,7 @@ export default function DeleteCourseScreen() {
 
     const handleDelete = async () => {
         if (!id) {
-            Alert.alert('Error', 'Course ID not found')
+            ToastAndroid.show('Course ID not found', ToastAndroid.SHORT)
             return
         }
 
@@ -38,7 +38,7 @@ export default function DeleteCourseScreen() {
             ToastAndroid.show('Course deleted successfully', ToastAndroid.SHORT)
             router.back()
         } catch (error) {
-            Alert.alert('Error', 'Failed to delete course')
+            ToastAndroid.show('Failed to delete course', ToastAndroid.SHORT)
         } finally {
             setIsLoading(false)
         }

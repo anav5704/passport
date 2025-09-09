@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Text, StyleSheet, Alert, ToastAndroid } from 'react-native'
+import { View, Text, StyleSheet, ToastAndroid } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import { useCourse } from '@/contexts/CourseContext'
@@ -17,7 +17,7 @@ export default function CreateCourseScreen() {
 
     const handleConfirm = async () => {
         if (!courseCode.trim()) {
-            Alert.alert('Error', 'Please enter a valid course code')
+            ToastAndroid.show('Enter a valid course code', ToastAndroid.SHORT)
             return
         }
 
@@ -27,7 +27,11 @@ export default function CreateCourseScreen() {
             ToastAndroid.show('Course created successfully', ToastAndroid.SHORT)
             router.back()
         } catch (error) {
-            Alert.alert('Error', 'Failed to create course')
+            if (error instanceof Error && error.message === 'Course code already exists') {
+                ToastAndroid.show('Course code already exists.', ToastAndroid.LONG)
+            } else {
+                ToastAndroid.show('Failed to create course', ToastAndroid.SHORT)
+            }
         } finally {
             setIsLoading(false)
         }

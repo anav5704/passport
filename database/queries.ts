@@ -28,6 +28,17 @@ export const updateUserName = async (userId: number, name: string) => {
 
 // Course queries
 export const createCourse = async (code: string, leaderId: number) => {
+    // Check if course code already exists
+    const existingCourse = await db
+        .select()
+        .from(courses)
+        .where(eq(courses.code, code.trim()))
+        .limit(1);
+
+    if (existingCourse.length > 0) {
+        throw new Error("Course code already exists");
+    }
+
     const [course] = await db
         .insert(courses)
         .values({

@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "e734b267-e098-43e3-8e3d-687e78d92e35",
+  "id": "858aca12-a360-43c0-8b73-c0a5cb070436",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "attendance": {
@@ -101,7 +101,15 @@
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "courses_code_unique": {
+          "name": "courses_code_unique",
+          "columns": [
+            "code"
+          ],
+          "isUnique": true
+        }
+      },
       "foreignKeys": {
         "courses_leader_id_users_id_fk": {
           "name": "courses_leader_id_users_id_fk",
@@ -146,7 +154,22 @@
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "students_student_id_unique": {
+          "name": "students_student_id_unique",
+          "columns": [
+            "student_id"
+          ],
+          "isUnique": true
+        },
+        "students_student_signature_unique": {
+          "name": "students_student_signature_unique",
+          "columns": [
+            "student_signature"
+          ],
+          "isUnique": true
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},

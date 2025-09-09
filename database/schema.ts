@@ -11,7 +11,7 @@ export const users = sqliteTable("users", {
 // Course table
 export const courses = sqliteTable("courses", {
     id: integer("id").primaryKey({ autoIncrement: true }),
-    code: text("code").notNull(),
+    code: text("code").notNull().unique(),
     leaderId: integer("leader_id")
         .notNull()
         .references(() => users.id),
@@ -21,8 +21,8 @@ export const courses = sqliteTable("courses", {
 // Student table
 export const students = sqliteTable("students", {
     id: integer("id").primaryKey({ autoIncrement: true }),
-    studentId: text("student_id").notNull(),
-    studentSignature: text("student_signature").notNull(),
+    studentId: text("student_id").notNull().unique(),
+    studentSignature: text("student_signature").notNull().unique(),
 });
 
 // Attendance table
