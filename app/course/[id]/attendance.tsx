@@ -6,6 +6,7 @@ import Constants from 'expo-constants'
 import * as FileSystem from 'expo-file-system'
 import * as Sharing from 'expo-sharing'
 import * as XLSX from 'xlsx'
+import CryptoJS from 'crypto-js'
 import { useCourse } from '@/contexts/CourseContext'
 import { useUser } from '@/contexts/UserContext'
 import { useTheme } from '@/contexts/ThemeContext'
@@ -81,15 +82,32 @@ export default function AttendanceExportScreen() {
             'Leader': user?.name || '',
         }))
 
-        const worksheet = XLSX.utils.json_to_sheet(data)
+        // Generate checksum from the attendance data (ensure consistent ordering)
+        const dataForChecksum = data.map(row => ({
+            Date: row.Date,
+            Time: row.Time,
+            Student: row.Student,
+            Course: row.Course,
+            Leader: row.Leader
+        }))
+
+        const dataString = JSON.stringify(dataForChecksum)
+        const checksum = CryptoJS.SHA256(dataString).toString()
+
+        const worksheet = XLSX.utils.json_to_sheet(data, { header: ['Date', 'Time', 'Student', 'Course', 'Leader'] })
+
+        // Create a hidden worksheet to store the checksum
+        const checksumData = [{ checksum: checksum }]
+        const checksumSheet = XLSX.utils.json_to_sheet(checksumData)
+        checksumSheet['!hidden'] = true
 
         // Set column widths for better readability
         worksheet['!cols'] = [
-            { wch: 15 },  // Course column
-            { wch: 15 },  // Leader column
             { wch: 15 },  // Date column
             { wch: 15 },  // Time column
-            { wch: 30 }   // Student ID column
+            { wch: 30 },  // Student ID column
+            { wch: 15 },  // Course column
+            { wch: 15 }   // Leader column
         ]
 
         // Get admin password from environment variables
@@ -97,6 +115,7 @@ export default function AttendanceExportScreen() {
 
         const workbook = XLSX.utils.book_new()
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Attendance')
+        XLSX.utils.book_append_sheet(workbook, checksumSheet, '_checksum')
 
         // Add password protection to the worksheet
         worksheet['!protect'] = {
