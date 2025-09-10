@@ -104,7 +104,7 @@ export default function SessionDetailScreen() {
                                 </Text>
                             </View>
                         )}
-                        contentContainerStyle={styles.listContainer}
+                        contentContainerStyle={{ paddingBottom: insets.bottom }}
                         showsVerticalScrollIndicator={false}
                     />
                 ) : null}
@@ -138,9 +138,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '500',
     },
-    listContainer: {
-        paddingBottom: 20,
-    },
     attendanceItem: {
         backgroundColor: '#fff',
         borderRadius: 8,
@@ -149,7 +146,7 @@ const styles = StyleSheet.create({
         borderColor: '#f4f4f5',
     },
     attendanceItemWithMargin: {
-        marginBottom: 12,
+        marginBottom: 20,
     },
     studentId: {
         fontSize: 16,
