@@ -1,19 +1,12 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "858aca12-a360-43c0-8b73-c0a5cb070436",
+  "id": "06642675-12d9-4362-aaeb-e884fdb9f0e3",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "attendance": {
       "name": "attendance",
       "columns": {
-        "attendance_id": {
-          "name": "attendance_id",
-          "type": "integer",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": true
-        },
         "student_id": {
           "name": "student_id",
           "type": "integer",
@@ -21,8 +14,8 @@
           "notNull": true,
           "autoincrement": false
         },
-        "course_id": {
-          "name": "course_id",
+        "session_id": {
+          "name": "session_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
@@ -51,12 +44,12 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "attendance_course_id_courses_id_fk": {
-          "name": "attendance_course_id_courses_id_fk",
+        "attendance_session_id_sessions_id_fk": {
+          "name": "attendance_session_id_sessions_id_fk",
           "tableFrom": "attendance",
-          "tableTo": "courses",
+          "tableTo": "sessions",
           "columnsFrom": [
-            "course_id"
+            "session_id"
           ],
           "columnsTo": [
             "id"
@@ -65,7 +58,15 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {},
+      "compositePrimaryKeys": {
+        "attendance_student_id_session_id_pk": {
+          "columns": [
+            "student_id",
+            "session_id"
+          ],
+          "name": "attendance_student_id_session_id_pk"
+        }
+      },
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
@@ -117,6 +118,58 @@
           "tableTo": "users",
           "columnsFrom": [
             "leader_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "sessions": {
+      "name": "sessions",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "date": {
+          "name": "date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "start_time": {
+          "name": "start_time",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "course_id": {
+          "name": "course_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "sessions_course_id_courses_id_fk": {
+          "name": "sessions_course_id_courses_id_fk",
+          "tableFrom": "sessions",
+          "tableTo": "courses",
+          "columnsFrom": [
+            "course_id"
           ],
           "columnsTo": [
             "id"

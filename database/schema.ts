@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
+import { sqliteTable, text, integer, primaryKey } from "drizzle-orm/sqlite-core";
 import { relations } from "drizzle-orm";
 import { sql } from "drizzle-orm";
 
@@ -25,17 +25,28 @@ export const students = sqliteTable("students", {
     studentSignature: text("student_signature").notNull().unique(),
 });
 
-// Attendance table
-export const attendance = sqliteTable("attendance", {
-    attendanceId: integer("attendance_id").primaryKey({ autoIncrement: true }),
-    studentId: integer("student_id")
-        .notNull()
-        .references(() => students.id),
+// Session table
+export const sessions = sqliteTable("sessions", {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    date: text("date").notNull(),
+    startTime: integer("start_time").notNull(),
     courseId: integer("course_id")
         .notNull()
         .references(() => courses.id),
-    timestamp: text("timestamp").notNull(),
 });
+
+// Attendance table
+export const attendance = sqliteTable("attendance", {
+    studentId: integer("student_id")
+        .notNull()
+        .references(() => students.id),
+    sessionId: integer("session_id")
+        .notNull()
+        .references(() => sessions.id),
+    timestamp: text("timestamp").notNull(),
+}, (table) => [
+    primaryKey({ columns: [table.studentId, table.sessionId] }),
+]);
 
 // Define relationships
 export const usersRelations = relations(users, ({ many }) => ({
@@ -47,6 +58,14 @@ export const coursesRelations = relations(courses, ({ one, many }) => ({
         fields: [courses.leaderId],
         references: [users.id],
     }),
+    sessions: many(sessions),
+}));
+
+export const sessionsRelations = relations(sessions, ({ one, many }) => ({
+    course: one(courses, {
+        fields: [sessions.courseId],
+        references: [courses.id],
+    }),
     attendance: many(attendance),
 }));
 
@@ -55,9 +74,9 @@ export const studentsRelations = relations(students, ({ many }) => ({
 }));
 
 export const attendanceRelations = relations(attendance, ({ one }) => ({
-    course: one(courses, {
-        fields: [attendance.courseId],
-        references: [courses.id],
+    session: one(sessions, {
+        fields: [attendance.sessionId],
+        references: [sessions.id],
     }),
     student: one(students, {
         fields: [attendance.studentId],
@@ -74,6 +93,9 @@ export type NewCourse = typeof courses.$inferInsert;
 
 export type Student = typeof students.$inferSelect;
 export type NewStudent = typeof students.$inferInsert;
+
+export type Session = typeof sessions.$inferSelect;
+export type NewSession = typeof sessions.$inferInsert;
 
 export type Attendance = typeof attendance.$inferSelect;
 export type NewAttendance = typeof attendance.$inferInsert;
