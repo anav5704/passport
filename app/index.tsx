@@ -18,7 +18,7 @@ export default function Index() {
     const { user, isLoading } = useUser()
     const { currentCourse } = useCourse()
     const { colors, themeMode } = useTheme()
-    const { sessions, sessionHistory, isLoading: isLoadingHistory } = useSession()
+    const { sessions, sessionHistory, isLoading: isLoadingHistory, refreshSessions } = useSession()
     const insets = useSafeAreaInsets()
     const {
         generalSettingsRef,
@@ -77,8 +77,9 @@ export default function Index() {
         return `${day} ${dayOfMonth} ${month}, ${displayHours}${ampm}`
     }
 
-    const addNewAttendance = (studentId: string) => {
-        // Session context will handle refreshing data automatically
+    const addNewAttendance = async (studentId: string) => {
+        // Refresh session data to update attendance counts
+        await refreshSessions()
     }
 
     const handleAvatarPress = () => {
@@ -139,18 +140,23 @@ export default function Index() {
                                         <TouchableOpacity
                                             style={[
                                                 styles.attendanceItem,
-                                                { backgroundColor: colors.surface, borderColor: colors.border },
+                                                {
+                                                    backgroundColor: colors.surface,
+                                                    borderColor: isActive ? '#009ca3' : colors.border
+                                                },
                                                 index < sessions.length - 1 && styles.attendanceItemWithMargin
                                             ]}
                                             onPress={() => handleSessionPress(item.id)}
                                             activeOpacity={0.7}
                                         >
-                                            <Text style={[styles.studentId, { color: colors.text }]}>
-                                                {formatSessionDisplay(item.timestamp)}
-                                            </Text>
-                                            <Text style={[styles.sessionId, { color: colors.textSecondary }]}>
-                                                {isActive ? 'Session in progress' : 'Session completed'}
-                                            </Text>
+                                            <View style={styles.sessionInfo}>
+                                                <Text style={[styles.studentId, { color: colors.text }]}>
+                                                    {formatSessionDisplay(item.timestamp)}
+                                                </Text>
+                                                <Text style={[styles.attendanceCount, { color: colors.textSecondary }]}>
+                                                    {item.attendanceCount || 0} student{(item.attendanceCount || 0) !== 1 ? 's' : ''} attended
+                                                </Text>
+                                            </View>
                                         </TouchableOpacity>
                                     )
                                 }}
@@ -205,23 +211,17 @@ const styles = StyleSheet.create({
     attendanceItemWithMargin: {
         marginBottom: 20,
     },
+    sessionInfo: {
+        flex: 1,
+    },
     studentId: {
         fontSize: 16,
         fontWeight: '600',
         color: '#333',
         marginBottom: 5,
     },
-    timestamp: {
+    attendanceCount: {
         fontSize: 14,
-        color: '#666',
-    },
-    sessionInfo: {
-        fontSize: 12,
-        color: '#888',
-        marginTop: 4,
-    },
-    sessionId: {
-        fontSize: 16,
         color: '#666',
     },
 })

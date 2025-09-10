@@ -305,9 +305,14 @@ export const getSessionsWithAttendanceCount = async (courseId: number) => {
             id: sessions.id,
             timestamp: sessions.timestamp,
             courseId: sessions.courseId,
+            attendanceCount: sql<number>`count(${attendance.studentId})`.as(
+                "attendanceCount"
+            ),
         })
         .from(sessions)
+        .leftJoin(attendance, eq(sessions.id, attendance.sessionId))
         .where(eq(sessions.courseId, courseId))
+        .groupBy(sessions.id, sessions.timestamp, sessions.courseId)
         .orderBy(desc(sessions.timestamp));
 };
 

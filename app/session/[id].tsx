@@ -107,13 +107,7 @@ export default function SessionDetailScreen() {
                         contentContainerStyle={styles.listContainer}
                         showsVerticalScrollIndicator={false}
                     />
-                ) : (
-                    <View style={styles.emptyContainer}>
-                        <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
-                            No students have attended this session yet
-                        </Text>
-                    </View>
-                )}
+                ) : null}
             </View>
         </View>
     )
@@ -138,8 +132,7 @@ const styles = StyleSheet.create({
         color: '#666',
     },
     summaryContainer: {
-        marginBottom: 20,
-        paddingBottom: 16,
+        paddingBottom: 20,
     },
     summaryText: {
         fontSize: 16,
@@ -161,16 +154,5 @@ const styles = StyleSheet.create({
     studentId: {
         fontSize: 16,
         fontWeight: '500',
-    },
-    emptyContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingTop: 40,
-    },
-    emptyText: {
-        fontSize: 16,
-        color: '#666',
-        textAlign: 'center',
     },
 })
