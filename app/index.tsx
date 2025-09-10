@@ -13,7 +13,7 @@ import BarcodeScanner from '@/components/BarcodeScanner'
 import GeneralSettingsSheet from '@/components/sheets/GeneralSettingsSheet'
 import CourseSwitcherSheet from '@/components/sheets/CourseSwitcherSheet'
 import CourseSettingsSheet from '@/components/sheets/CourseSettingsSheet'
-import SessionHistoryList from '@/components/SessionHistoryList'
+import SessionList from '@/components/SessionList'
 
 export default function Index() {
     const { user, isLoading } = useUser()
@@ -84,7 +84,7 @@ export default function Index() {
                 <View style={styles.statsSection}>
                     {currentCourse && sessions.length > 0 && !isLoadingHistory && (
                         <View style={styles.attendanceList}>
-                            <SessionHistoryList
+                            <SessionList
                                 sessions={sessions}
                                 onSessionPress={handleSessionPress}
                             />

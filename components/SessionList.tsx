@@ -3,14 +3,14 @@ import { StyleSheet, TouchableOpacity } from 'react-native'
 import { FlashList } from '@shopify/flash-list'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTheme } from '@/contexts/ThemeContext'
-import SessionHistoryItem from '@/components/SessionHistoryItem'
+import SessionItem from '@/components/SessionItem'
 
-interface SessionHistoryListProps {
+interface SessionListProps {
     sessions: any[]
     onSessionPress: (sessionId: number) => void
 }
 
-export default function SessionHistoryList({ sessions, onSessionPress }: SessionHistoryListProps) {
+export default function SessionList({ sessions, onSessionPress }: SessionListProps) {
     const { colors } = useTheme()
     const insets = useSafeAreaInsets()
 
@@ -20,7 +20,7 @@ export default function SessionHistoryList({ sessions, onSessionPress }: Session
             keyExtractor={(item: any, index) => `session-${item.id}-${index}`}
             estimatedItemSize={100}
             renderItem={({ item, index }) => (
-                <SessionHistoryItem
+                <SessionItem
                     session={item}
                     index={index}
                     totalItems={sessions.length}
