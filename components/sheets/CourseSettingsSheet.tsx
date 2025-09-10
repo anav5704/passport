@@ -6,7 +6,7 @@ import { useCourse } from '@/contexts/CourseContext'
 import { useSheet } from '@/contexts/SheetContext'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useSession } from '@/contexts/SessionContext'
-import BaseSheet, { BaseSheetRef } from './BaseSheet'
+import BaseSheet, { BaseSheetRef } from '@/components/sheets/BaseSheet'
 
 const CourseSettingsSheet = forwardRef<BaseSheetRef, {}>((props, ref) => {
     const { currentCourse } = useCourse()

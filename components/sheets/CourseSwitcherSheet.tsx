@@ -6,7 +6,7 @@ import { useUser } from '@/contexts/UserContext'
 import { useCourse } from '@/contexts/CourseContext'
 import { useSheet } from '@/contexts/SheetContext'
 import { useTheme } from '@/contexts/ThemeContext'
-import BaseSheet, { BaseSheetRef } from './BaseSheet'
+import BaseSheet, { BaseSheetRef } from '@/components/sheets/BaseSheet'
 
 const CourseSwitcherSheet = forwardRef<BaseSheetRef, {}>((props, ref) => {
     const { user } = useUser()

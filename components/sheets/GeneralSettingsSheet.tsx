@@ -4,7 +4,7 @@ import { UserRound } from 'lucide-react-native'
 import { router } from 'expo-router'
 import { useUser } from '@/contexts/UserContext'
 import { useTheme } from '@/contexts/ThemeContext'
-import BaseSheet, { BaseSheetRef } from './BaseSheet'
+import BaseSheet, { BaseSheetRef } from '@/components/sheets/BaseSheet'
 
 const GeneralSettingsSheet = forwardRef<BaseSheetRef, {}>((props, ref) => {
     const { user } = useUser()
