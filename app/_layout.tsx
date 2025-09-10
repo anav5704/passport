@@ -10,6 +10,7 @@ import { db } from '@database'
 import { UserProvider } from '@/contexts/UserContext'
 import { CourseProvider } from '@/contexts/CourseContext'
 import { SheetProvider } from '@/contexts/SheetContext'
+import { SessionProvider } from '@/contexts/SessionContext'
 import { ThemeProvider, useTheme } from '@/contexts/ThemeContext'
 import { useUser } from '@/contexts/UserContext'
 import { useEffect } from 'react'
@@ -65,11 +66,13 @@ export default function RootLayout() {
             <ThemeProvider>
                 <UserProvider>
                     <CourseProvider>
-                        <SheetProvider>
-                            <SafeAreaView style={styles.container} edges={[]}>
-                                <RootLayoutNav />
-                            </SafeAreaView>
-                        </SheetProvider>
+                        <SessionProvider>
+                            <SheetProvider>
+                                <SafeAreaView style={styles.container} edges={[]}>
+                                    <RootLayoutNav />
+                                </SafeAreaView>
+                            </SheetProvider>
+                        </SessionProvider>
                     </CourseProvider>
                 </UserProvider>
             </ThemeProvider>

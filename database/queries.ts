@@ -1,5 +1,11 @@
-import { users, courses, students, attendance } from "@database/schema";
-import { eq, and } from "drizzle-orm";
+import {
+    users,
+    courses,
+    students,
+    attendance,
+    sessions,
+} from "@database/schema";
+import { eq, and, desc, sql } from "drizzle-orm";
 import { db } from "@database";
 
 // User queries
@@ -161,6 +167,63 @@ export const getUserWithCourses = async () => {
     }
 };
 
+// Session queries
+export const createSession = async (courseId: number, timestamp?: string) => {
+    const sessionTimestamp = timestamp || new Date().toISOString();
+    const sessionDate = new Date(sessionTimestamp);
+
+    // Get the start and end of the current hour
+    const hourStart = new Date(sessionDate);
+    hourStart.setMinutes(0, 0, 0);
+
+    const hourEnd = new Date(sessionDate);
+    hourEnd.setMinutes(59, 59, 999);
+
+    // Check if a session already exists for this course in the same hour
+    const existingSession = await db
+        .select()
+        .from(sessions)
+        .where(
+            and(
+                eq(sessions.courseId, courseId),
+                sql`${sessions.timestamp} >= ${hourStart.toISOString()}`,
+                sql`${sessions.timestamp} <= ${hourEnd.toISOString()}`
+            )
+        )
+        .limit(1);
+
+    if (existingSession.length > 0) {
+        throw new Error(
+            "A session already exists for this course in the current hour"
+        );
+    }
+
+    const [session] = await db
+        .insert(sessions)
+        .values({
+            courseId,
+            timestamp: sessionTimestamp,
+        })
+        .returning();
+    return session;
+};
+
+export const getSessionsForCourse = async (courseId: number) => {
+    return await db
+        .select()
+        .from(sessions)
+        .where(eq(sessions.courseId, courseId))
+        .orderBy(desc(sessions.timestamp));
+};
+
+export const getSessionById = async (sessionId: number) => {
+    const [session] = await db
+        .select()
+        .from(sessions)
+        .where(eq(sessions.id, sessionId));
+    return session;
+};
+
 // Student queries
 export const getStudentByStudentId = async (studentId: string) => {
     const [student] = await db
@@ -194,22 +257,36 @@ export const updateStudentSignature = async (
 };
 
 // Attendance queries
-export const logAttendance = async (studentId: number, courseId: number) => {
-    const timestamp = new Date().toISOString();
+export const logAttendance = async (studentId: number, sessionId: number) => {
+    // Check if attendance already exists for this student and session
+    const existingAttendance = await db
+        .select()
+        .from(attendance)
+        .where(
+            and(
+                eq(attendance.studentId, studentId),
+                eq(attendance.sessionId, sessionId)
+            )
+        )
+        .limit(1);
+
+    if (existingAttendance.length > 0) {
+        throw new Error("Attendance already taken");
+    }
+
     const [attendanceRecord] = await db
         .insert(attendance)
         .values({
             studentId,
-            courseId,
-            timestamp,
+            sessionId,
         })
         .returning();
     return attendanceRecord;
 };
 
-export const getAttendanceByStudentAndCourse = async (
+export const getAttendanceByStudentAndSession = async (
     studentId: number,
-    courseId: number
+    sessionId: number
 ) => {
     return await db
         .select()
@@ -217,20 +294,33 @@ export const getAttendanceByStudentAndCourse = async (
         .where(
             and(
                 eq(attendance.studentId, studentId),
-                eq(attendance.courseId, courseId)
+                eq(attendance.sessionId, sessionId)
             )
         );
+};
+
+export const getSessionsWithAttendanceCount = async (courseId: number) => {
+    return await db
+        .select({
+            id: sessions.id,
+            timestamp: sessions.timestamp,
+            courseId: sessions.courseId,
+        })
+        .from(sessions)
+        .where(eq(sessions.courseId, courseId))
+        .orderBy(desc(sessions.timestamp));
 };
 
 export const getAttendanceHistoryForCourse = async (courseId: number) => {
     return await db
         .select({
-            attendanceId: attendance.attendanceId,
             studentId: students.studentId,
-            timestamp: attendance.timestamp,
+            sessionId: attendance.sessionId,
+            sessionTimestamp: sessions.timestamp,
         })
         .from(attendance)
         .innerJoin(students, eq(attendance.studentId, students.id))
-        .where(eq(attendance.courseId, courseId))
-        .orderBy(attendance.timestamp); // Will reverse this in the component
+        .innerJoin(sessions, eq(attendance.sessionId, sessions.id))
+        .where(eq(sessions.courseId, courseId))
+        .orderBy(sessions.timestamp);
 };

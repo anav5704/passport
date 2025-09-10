@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useRef, ReactNode } from 'react'
+import React, { createContext, useContext, useRef, ReactNode, useState } from 'react'
 import { BaseSheetRef } from '@/components/sheets/BaseSheet'
 
 interface SheetContextType {
@@ -9,6 +9,8 @@ interface SheetContextType {
     openCourseSwitcher: () => void
     openCourseSettings: () => void
     closeAllSheets: () => void
+    onSessionCreated?: () => void
+    setOnSessionCreated: (callback: () => void) => void
 }
 
 const SheetContext = createContext<SheetContextType | undefined>(undefined)
@@ -22,6 +24,9 @@ export function SheetProvider({ children }: SheetProviderProps) {
     const generalSettingsRef = useRef<BaseSheetRef>(null)
     const courseSwitcherRef = useRef<BaseSheetRef>(null)
     const courseSettingsRef = useRef<BaseSheetRef>(null)
+
+    // Session callback
+    const [onSessionCreated, setOnSessionCreated] = useState<(() => void) | undefined>(undefined)
 
     // Sheet control functions
     const openGeneralSettings = () => {
@@ -52,6 +57,8 @@ export function SheetProvider({ children }: SheetProviderProps) {
                 openCourseSwitcher,
                 openCourseSettings,
                 closeAllSheets,
+                onSessionCreated,
+                setOnSessionCreated,
             }}
         >
             {children}

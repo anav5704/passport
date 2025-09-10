@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { FlashList } from '@shopify/flash-list'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useUser } from '@/contexts/UserContext'
 import { useCourse } from '@/contexts/CourseContext'
 import { useSheet } from '@/contexts/SheetContext'
+import { useSession } from '@/contexts/SessionContext'
 import { useTheme } from '@/contexts/ThemeContext'
-import { getAttendanceHistoryForCourse } from '@/database/queries'
 import Header from '@/components/Header'
 import BarcodeScanner from '@/components/BarcodeScanner'
 import GeneralSettingsSheet from '@/components/sheets/GeneralSettingsSheet'
@@ -17,9 +17,8 @@ export default function Index() {
     const { user, isLoading } = useUser()
     const { currentCourse } = useCourse()
     const { colors, themeMode } = useTheme()
+    const { sessions, sessionHistory, isLoading: isLoadingHistory } = useSession()
     const insets = useSafeAreaInsets()
-    const [attendanceHistory, setAttendanceHistory] = useState<any[]>([])
-    const [isLoadingAttendance, setIsLoadingAttendance] = useState(false)
     const {
         generalSettingsRef,
         courseSwitcherRef,
@@ -33,7 +32,7 @@ export default function Index() {
     // Function to format timestamp as "6 Sep, 10.00am"
     const formatTimestamp = (timestamp: string) => {
         const date = new Date(timestamp)
-        const day = date.getDate().toString() // Remove padStart to avoid leading zeros
+        const day = date.getDate().toString()
         const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
             'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
         const month = months[date.getMonth()]
@@ -45,46 +44,47 @@ export default function Index() {
         return `${day} ${month}, ${displayHours}.${displayMinutes}${ampm}`
     }
 
-    useEffect(() => {
-        const fetchAttendanceHistory = async () => {
-            if (!currentCourse) {
-                setAttendanceHistory([])
-                return
-            }
+    // Function to check if session is active
+    const isSessionActive = (timestamp: string) => {
+        const sessionTime = new Date(timestamp)
+        const now = new Date()
 
-            try {
-                setIsLoadingAttendance(true)
-                const history = await getAttendanceHistoryForCourse(currentCourse.id)
-                setAttendanceHistory(history)
-            } catch (error) {
-                console.error('Error fetching attendance history:', error)
-                setAttendanceHistory([])
-            } finally {
-                setIsLoadingAttendance(false)
-            }
-        }
+        // Check if it's the same day
+        const isSameDay = sessionTime.toDateString() === now.toDateString()
 
-        fetchAttendanceHistory()
-    }, [currentCourse])
+        if (!isSameDay) return false
+
+        // Check if current time is within the same hour as session start
+        const sessionHour = sessionTime.getHours()
+        const currentHour = now.getHours()
+
+        return sessionHour === currentHour
+    }
+
+    // Function to format session display: "Mon 23 Jun, 10am"
+    const formatSessionDisplay = (timestamp: string) => {
+        const date = new Date(timestamp)
+        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        const day = days[date.getDay()]
+        const dayOfMonth = date.getDate()
+        const month = months[date.getMonth()]
+        const hours24 = date.getHours()
+        const ampm = hours24 >= 12 ? 'pm' : 'am'
+        const displayHours = hours24 === 0 ? 12 : (hours24 > 12 ? hours24 - 12 : hours24)
+        return `${day} ${dayOfMonth} ${month}, ${displayHours}${ampm}`
+    }
 
     const addNewAttendance = (studentId: string) => {
-        const timestamp = new Date().toISOString()
-        const newAttendance = {
-            id: `temp-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, // unique temporary ID
-            studentId,
-            timestamp,
-            courseId: currentCourse?.id
-        }
-
-        // Add to top of list
-        setAttendanceHistory(prev => [newAttendance, ...prev])
+        // Session context will handle refreshing data automatically
     }
 
     const handleAvatarPress = () => {
         openGeneralSettings()
     }
 
-    const handleCourseTitlePress = () => {
+    const handleCoursePress = () => {
         openCourseSwitcher()
     }
 
@@ -92,7 +92,7 @@ export default function Index() {
         openCourseSettings()
     }
 
-    if (isLoading) {
+    if (isLoading || !user) {
         return (
             <View style={[styles.container, { backgroundColor: colors.background }]}>
                 <Text style={[styles.loadingText, { color: colors.text }]}>Loading...</Text>
@@ -100,28 +100,16 @@ export default function Index() {
         )
     }
 
-    if (!user) {
-        return (
-            <View style={[styles.container, { backgroundColor: colors.background }]}>
-                <Text style={[styles.errorText, { color: colors.danger }]}>No user found</Text>
-            </View>
-        )
-    }
-
     return (
         <View style={[styles.container, { backgroundColor: colors.background }]}>
-            {/* Header */}
             <Header
                 currentCourse={currentCourse || undefined}
                 onAvatarPress={handleAvatarPress}
-                onCourseTitlePress={handleCourseTitlePress}
+                onCourseTitlePress={handleCoursePress}
                 onMenuPress={handleMenuPress}
-                hasNoCourses={user?.courses?.length === 0}
             />
+            <View style={[styles.content, { paddingBottom: insets.bottom }]}>
 
-            {/* Main Content */}
-            <View style={styles.content}>
-                {/* Barcode Scanner - Only show when there's a current course */}
                 {currentCourse && (
                     <View style={styles.scannerSection}>
                         <BarcodeScanner
@@ -132,24 +120,31 @@ export default function Index() {
                     </View>
                 )}
 
-                {/* Attendance History */}
+                {/* Session History */}
                 <View style={styles.statsSection}>
-                    {currentCourse && attendanceHistory.length > 0 && !isLoadingAttendance && (
+                    {currentCourse && sessions.length > 0 && !isLoadingHistory && (
                         <View style={styles.attendanceList}>
                             <FlashList
-                                data={attendanceHistory}
-                                keyExtractor={(item, index) => `${item.id}-${item.studentId}-${index}`}
+                                data={sessions}
+                                keyExtractor={(item: any, index) => `session-${item.id}-${index}`}
                                 estimatedItemSize={100}
-                                renderItem={({ item, index }) => (
-                                    <View style={[
-                                        styles.attendanceItem,
-                                        { backgroundColor: colors.surface, borderColor: colors.border },
-                                        index < attendanceHistory.length - 1 && styles.attendanceItemWithMargin
-                                    ]}>
-                                        <Text style={[styles.studentId, { color: colors.text }]}>{item.studentId}</Text>
-                                        <Text style={[styles.timestamp, { color: colors.textSecondary }]}>{formatTimestamp(item.timestamp)}</Text>
-                                    </View>
-                                )}
+                                renderItem={({ item, index }) => {
+                                    const isActive = isSessionActive(item.timestamp)
+                                    return (
+                                        <View style={[
+                                            styles.attendanceItem,
+                                            { backgroundColor: colors.surface, borderColor: colors.border },
+                                            index < sessions.length - 1 && styles.attendanceItemWithMargin
+                                        ]}>
+                                            <Text style={[styles.studentId, { color: colors.text }]}>
+                                                {formatSessionDisplay(item.timestamp)}
+                                            </Text>
+                                            <Text style={[styles.sessionId, { color: colors.textSecondary }]}>
+                                                {isActive ? 'Session in progress' : 'Session completed'}
+                                            </Text>
+                                        </View>
+                                    )
+                                }}
                                 contentContainerStyle={{ paddingBottom: insets.bottom }}
                                 showsVerticalScrollIndicator={false}
                             />
@@ -165,6 +160,7 @@ export default function Index() {
         </View>
     )
 }
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -172,24 +168,16 @@ const styles = StyleSheet.create({
     content: {
         flex: 1,
         padding: 20,
-        paddingBottom: 0
+        paddingBottom: 0,
     },
     scannerSection: {
-
     },
     statsSection: {
         flex: 1,
     },
     loadingText: {
         fontSize: 16,
-        color: '#666',
-        textAlign: 'center',
-        flex: 1,
-        textAlignVertical: 'center',
-    },
-    errorText: {
-        fontSize: 16,
-        color: '#ff4444',
+        color: '#333',
         textAlign: 'center',
         flex: 1,
         textAlignVertical: 'center',
@@ -203,7 +191,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         padding: 16,
         borderWidth: 1,
-        borderColor: '#f4f4f5', // zinc-100 equivalent
+        borderColor: '#f4f4f5',
     },
     attendanceItemWithMargin: {
         marginBottom: 20,
@@ -216,6 +204,15 @@ const styles = StyleSheet.create({
     },
     timestamp: {
         fontSize: 14,
+        color: '#666',
+    },
+    sessionInfo: {
+        fontSize: 12,
+        color: '#888',
+        marginTop: 4,
+    },
+    sessionId: {
+        fontSize: 16,
         color: '#666',
     },
 })

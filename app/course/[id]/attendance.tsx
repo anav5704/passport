@@ -38,8 +38,8 @@ export default function AttendanceExportScreen() {
 
                         if (attendance.length > 0) {
                             const dates = attendance
-                                .filter(a => a.timestamp)
-                                .map(a => new Date(a.timestamp!))
+                                .filter(a => a.sessionTimestamp)
+                                .map(a => new Date(a.sessionTimestamp!))
                                 .sort((a, b) => a.getTime() - b.getTime())
 
                             if (dates.length > 0) {
@@ -75,8 +75,8 @@ export default function AttendanceExportScreen() {
 
     const generateExcel = () => {
         const data = attendanceData.map(attendance => ({
-            'Date': formatDate(attendance.timestamp),
-            'Time': formatTime(attendance.timestamp),
+            'Date': formatDate(attendance.sessionTimestamp),
+            'Time': formatTime(attendance.sessionTimestamp),
             'Student': attendance.studentId,
             'Course': courseName,
             'Leader': user?.name || '',

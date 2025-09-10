@@ -1,4 +1,9 @@
-import { sqliteTable, text, integer, primaryKey } from "drizzle-orm/sqlite-core";
+import {
+    sqliteTable,
+    text,
+    integer,
+    primaryKey,
+} from "drizzle-orm/sqlite-core";
 import { relations } from "drizzle-orm";
 import { sql } from "drizzle-orm";
 
@@ -28,25 +33,25 @@ export const students = sqliteTable("students", {
 // Session table
 export const sessions = sqliteTable("sessions", {
     id: integer("id").primaryKey({ autoIncrement: true }),
-    date: text("date").notNull(),
-    startTime: integer("start_time").notNull(),
+    timestamp: text("timestamp").notNull(),
     courseId: integer("course_id")
         .notNull()
         .references(() => courses.id),
 });
 
 // Attendance table
-export const attendance = sqliteTable("attendance", {
-    studentId: integer("student_id")
-        .notNull()
-        .references(() => students.id),
-    sessionId: integer("session_id")
-        .notNull()
-        .references(() => sessions.id),
-    timestamp: text("timestamp").notNull(),
-}, (table) => [
-    primaryKey({ columns: [table.studentId, table.sessionId] }),
-]);
+export const attendance = sqliteTable(
+    "attendance",
+    {
+        studentId: integer("student_id")
+            .notNull()
+            .references(() => students.id),
+        sessionId: integer("session_id")
+            .notNull()
+            .references(() => sessions.id),
+    },
+    (table) => [primaryKey({ columns: [table.studentId, table.sessionId] })]
+);
 
 // Define relationships
 export const usersRelations = relations(users, ({ many }) => ({

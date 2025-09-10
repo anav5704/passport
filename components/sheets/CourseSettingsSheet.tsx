@@ -1,16 +1,18 @@
 import React, { forwardRef } from 'react'
-import { StyleSheet, Text, Pressable } from 'react-native'
-import { ArrowDownToLine, Edit, Trash } from 'lucide-react-native'
+import { StyleSheet, Text, Pressable, ToastAndroid, Platform } from 'react-native'
+import { ArrowDownToLine, Edit, Trash, Play } from 'lucide-react-native'
 import { router } from 'expo-router'
 import { useCourse } from '@/contexts/CourseContext'
 import { useSheet } from '@/contexts/SheetContext'
 import { useTheme } from '@/contexts/ThemeContext'
+import { useSession } from '@/contexts/SessionContext'
 import BaseSheet, { BaseSheetRef } from './BaseSheet'
 
 const CourseSettingsSheet = forwardRef<BaseSheetRef, {}>((props, ref) => {
     const { currentCourse } = useCourse()
     const { closeAllSheets } = useSheet()
     const { colors } = useTheme()
+    const { createSession } = useSession()
 
     const handleEditCourse = () => {
         if (currentCourse) {
@@ -33,9 +35,39 @@ const CourseSettingsSheet = forwardRef<BaseSheetRef, {}>((props, ref) => {
         }
     }
 
+    const handleStartSession = async () => {
+        if (currentCourse) {
+            try {
+                // Create a new session for the current course
+                const newSession = await createSession()
+
+                // Close the sheet
+                closeAllSheets()
+
+                // SessionContext will automatically refresh the data
+            } catch (error) {
+                console.error('Error creating session:', error)
+
+                // Show toast notification for the error
+                const errorMessage = error instanceof Error ? error.message : 'Failed to create session'
+                if (Platform.OS === 'android') {
+                    ToastAndroid.show("Session already in progress", ToastAndroid.LONG)
+                    closeAllSheets()
+                } else {
+                    // For iOS or other platforms, you could use Alert.alert or another notification method
+                    console.log('Session creation error:', errorMessage)
+                }
+            }
+        }
+    }
+
     return (
         <BaseSheet ref={ref}>
             <Text style={[styles.title, { color: colors.text }]}>Course Settings</Text>
+            <Pressable style={styles.item} onPress={handleStartSession}>
+                <Play size={24} color={colors.text} style={styles.icon} />
+                <Text style={[styles.itemText, { color: colors.text }]}>Start Session</Text>
+            </Pressable>
             <Pressable style={styles.item} onPress={handleExportAttendance}>
                 <ArrowDownToLine size={24} color={colors.text} style={styles.icon} />
                 <Text style={[styles.itemText, { color: colors.text }]}>Export Attendance</Text>

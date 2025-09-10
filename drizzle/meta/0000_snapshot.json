@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "06642675-12d9-4362-aaeb-e884fdb9f0e3",
+  "id": "1688e351-e19d-43f0-b371-e066b2dfff57",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "attendance": {
@@ -17,13 +17,6 @@
         "session_id": {
           "name": "session_id",
           "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "timestamp": {
-          "name": "timestamp",
-          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -140,16 +133,9 @@
           "notNull": true,
           "autoincrement": true
         },
-        "date": {
-          "name": "date",
+        "timestamp": {
+          "name": "timestamp",
           "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "start_time": {
-          "name": "start_time",
-          "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
