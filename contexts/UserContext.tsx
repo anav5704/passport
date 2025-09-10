@@ -38,7 +38,6 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
             setUser(userData)
             setIsOnboardingComplete(true)
         } catch (error) {
-            console.error('Error loading user:', error)
             setUser(null)
             setIsOnboardingComplete(false)
         } finally {
@@ -56,7 +55,6 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
             await refreshUser() // Refresh to get updated data
             return { ok: true, value: undefined }
         } catch (error) {
-            console.error('Error updating user name:', error)
             return { ok: false, error: 'Failed to update user name' }
         }
     }

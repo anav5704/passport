@@ -41,7 +41,6 @@ export function SessionProvider({ children }: SessionProviderProps) {
             setSessions(sessionsData)
             setSessionHistory(historyData)
         } catch (error) {
-            console.error('Error fetching session data:', error)
             setSessions([])
             setSessionHistory([])
         } finally {

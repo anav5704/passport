@@ -44,7 +44,6 @@ export default function UpdateUserScreen() {
             ToastAndroid.show('Name updated successfully', ToastAndroid.SHORT)
             router.back()
         } catch (error) {
-            console.error('Unexpected error updating name:', error)
             ToastAndroid.show('Failed to update name', ToastAndroid.SHORT)
         } finally {
             setIsLoading(false)

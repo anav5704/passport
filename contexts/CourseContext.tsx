@@ -43,7 +43,6 @@ export function CourseProvider({ children }: CourseProviderProps) {
                         }
                     }
                 } catch (error) {
-                    console.error('Error setting initial course:', error)
                     // Fallback to first course if there's an error
                     setCurrentCourse(user.courses[0])
                 }
@@ -58,7 +57,7 @@ export function CourseProvider({ children }: CourseProviderProps) {
         try {
             await updateCourseLastAccessed(course.id)
         } catch (error) {
-            console.error('Error updating course last accessed:', error)
+            // Silently handle error
         }
     }
 

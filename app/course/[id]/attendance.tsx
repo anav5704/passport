@@ -49,7 +49,7 @@ export default function AttendanceExportScreen() {
                             }
                         }
                     } catch (error) {
-                        console.error('Error loading attendance data:', error)
+                        // Handle error silently
                     }
                 }
             }
@@ -164,7 +164,6 @@ export default function AttendanceExportScreen() {
                 ToastAndroid.show(`File saved as: ${fileName}`, ToastAndroid.SHORT)
             }
         } catch (error) {
-            console.error('Export error:', error)
             ToastAndroid.show('Export failed', ToastAndroid.SHORT)
         } finally {
             setIsLoading(false)

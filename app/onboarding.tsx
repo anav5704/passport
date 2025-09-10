@@ -67,7 +67,6 @@ export default function OnboardingScreen() {
             // Navigate to main app
             router.replace('/')
         } catch (error) {
-            console.error('Error setting up user:', error)
             ToastAndroid.show('Setup failed. Try again.', ToastAndroid.SHORT)
         } finally {
             setIsLoading(false)

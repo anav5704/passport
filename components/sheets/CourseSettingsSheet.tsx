@@ -41,16 +41,10 @@ const CourseSettingsSheet = forwardRef<BaseSheetRef, {}>((props, ref) => {
             const result = await createSession()
 
             if (!result.ok) {
-                console.log('Error creating session:', result.error)
-
                 // Show toast notification for the error
                 if (Platform.OS === 'android') {
                     ToastAndroid.show(result.error, ToastAndroid.LONG)
-                } else {
-                    // For iOS or other platforms, you could use Alert.alert or another notification method
-                    console.log('Session creation error:', result.error)
                 }
-                return
             }
 
             // Close the sheet

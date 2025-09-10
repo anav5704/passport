@@ -30,53 +30,33 @@ export default function BarcodeScanner({ isActive, onScanSuccess, onAttendanceLo
 
     const getMostRecentSession = async () => {
         if (!currentCourse) {
-            console.log('No current course for session lookup')
             return null
         }
 
-        console.log('Looking for sessions for course ID:', currentCourse.id)
-
         try {
             const sessions = await getSessionsForCourse(currentCourse.id)
-            console.log('Raw sessions data:', sessions)
-            console.log('Found sessions count:', sessions.length)
 
             if (sessions.length === 0) {
-                console.log('No sessions found for course', currentCourse.id)
                 return null
             }
 
-            // Log session details for debugging
-            sessions.forEach((session, index) => {
-                console.log(`Session ${index}:`, {
-                    id: session.id,
-                    timestamp: session.timestamp,
-                    courseId: session.courseId
-                })
-            })
-
             // Return the most recent session (first in the array since they're ordered by date descending)
             const mostRecent = sessions[0]
-            console.log('Most recent session:', mostRecent)
             return mostRecent
         } catch (error) {
-            console.error('Error getting most recent session:', error)
             return null
         }
     }
 
     const getActiveSession = async () => {
         if (!currentCourse) {
-            console.log('No current course for active session lookup')
             return null
         }
 
         try {
             const sessions = await getSessionsForCourse(currentCourse.id)
-            console.log('Checking for active sessions:', sessions.length)
 
             if (sessions.length === 0) {
-                console.log('No sessions found for course', currentCourse.id)
                 return null
             }
 
@@ -95,16 +75,13 @@ export default function BarcodeScanner({ isActive, onScanSuccess, onAttendanceLo
                     const currentHour = now.getHours()
 
                     if (sessionHour === currentHour) {
-                        console.log('Found active session:', session)
                         return session
                     }
                 }
             }
 
-            console.log('No active sessions found')
             return null
         } catch (error) {
-            console.error('Error getting active session:', error)
             return null
         }
     }
@@ -127,7 +104,6 @@ export default function BarcodeScanner({ isActive, onScanSuccess, onAttendanceLo
                 setHasPermission(response.status === 'granted')
             }
         } catch (error) {
-            console.error('Error requesting camera permission:', error)
             setHasPermission(false)
         }
     }
@@ -140,7 +116,6 @@ export default function BarcodeScanner({ isActive, onScanSuccess, onAttendanceLo
             setPermissionResponse(response)
             setHasPermission(response.status === 'granted')
         } catch (error) {
-            console.error('Error requesting camera permission:', error)
             setHasPermission(false)
         }
     }
@@ -212,7 +187,6 @@ export default function BarcodeScanner({ isActive, onScanSuccess, onAttendanceLo
 
     const handleSignatureScan = async (signature: string) => {
         if (!currentStudent) {
-            console.error('No student selected for signature scan')
             resetScanner()
             return
         }
@@ -228,24 +202,19 @@ export default function BarcodeScanner({ isActive, onScanSuccess, onAttendanceLo
 
             // Get the active session for attendance logging
             const activeSession = await getActiveSession()
-            console.log('Logging attendance for new student:', newStudent.id, 'with session:', activeSession)
 
             if (activeSession) {
                 const attendanceResult = await logAttendance(newStudent.id, activeSession.id)
 
                 if (attendanceResult.ok) {
-                    console.log('Attendance logged successfully')
                     // Call callback to update UI
                     onAttendanceLogged?.(currentStudent.studentId)
                     // Vibrate once for successful signature scan
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
                 } else {
-                    console.log('Error logging attendance:', attendanceResult.error)
                     // Show toast for duplicate attendance
                     if (Platform.OS === 'android') {
                         ToastAndroid.show(attendanceResult.error, ToastAndroid.LONG)
-                    } else {
-                        console.log('Attendance error:', attendanceResult.error)
                     }
                     // Vibrate for error
                     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
@@ -254,13 +223,10 @@ export default function BarcodeScanner({ isActive, onScanSuccess, onAttendanceLo
                     return
                 }
             } else {
-                console.warn('No active session found, skipping attendance logging')
                 // Show toast notification
                 const toastMessage = 'No sessions in progress'
                 if (Platform.OS === 'android') {
                     ToastAndroid.show(toastMessage, ToastAndroid.LONG)
-                } else {
-                    console.log('No active sessions:', toastMessage)
                 }
                 // Vibrate for error
                 Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
@@ -274,24 +240,19 @@ export default function BarcodeScanner({ isActive, onScanSuccess, onAttendanceLo
             if (currentStudent.studentSignature === signature) {
                 // Get the active session for attendance logging
                 const activeSession = await getActiveSession()
-                console.log('Logging attendance for existing student:', currentStudent.id, 'with session:', activeSession)
 
                 if (activeSession) {
                     const attendanceResult = await logAttendance(currentStudent.id, activeSession.id)
 
                     if (attendanceResult.ok) {
-                        console.log('Attendance logged successfully')
                         // Call callback to update UI
                         onAttendanceLogged?.(currentStudent.studentId)
                         // Vibrate once for successful signature scan
                         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
                     } else {
-                        console.log('Error logging attendance:', attendanceResult.error)
                         // Show toast for duplicate attendance
                         if (Platform.OS === 'android') {
                             ToastAndroid.show(attendanceResult.error, ToastAndroid.LONG)
-                        } else {
-                            console.log('Attendance error:', attendanceResult.error)
                         }
                         // Vibrate for error
                         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
@@ -300,13 +261,10 @@ export default function BarcodeScanner({ isActive, onScanSuccess, onAttendanceLo
                         return
                     }
                 } else {
-                    console.warn('No active session found, skipping attendance logging')
                     // Show toast notification
                     const toastMessage = 'No sessions in progress'
                     if (Platform.OS === 'android') {
                         ToastAndroid.show(toastMessage, ToastAndroid.LONG)
-                    } else {
-                        console.log('No active sessions:', toastMessage)
                     }
                     // Vibrate for error
                     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
@@ -320,8 +278,6 @@ export default function BarcodeScanner({ isActive, onScanSuccess, onAttendanceLo
                 const toastMessage = 'Signature does not match'
                 if (Platform.OS === 'android') {
                     ToastAndroid.show(toastMessage, ToastAndroid.LONG)
-                } else {
-                    console.log('Signature mismatch:', toastMessage)
                 }
                 // Longer vibration for failure (signature mismatch)
                 Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)

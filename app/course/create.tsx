@@ -32,7 +32,6 @@ export default function CreateCourseScreen() {
             ToastAndroid.show('Course created successfully', ToastAndroid.SHORT)
             router.back()
         } catch (error) {
-            console.error('Unexpected error creating course:', error)
             ToastAndroid.show('Failed to create course', ToastAndroid.SHORT)
         } finally {
             setIsLoading(false)

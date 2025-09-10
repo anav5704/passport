@@ -74,7 +74,7 @@ export default function Index() {
                     <View style={styles.scannerSection}>
                         <BarcodeScanner
                             isActive={!!currentCourse}
-                            onScanSuccess={(data) => console.log('Scanned:', data)}
+                            onScanSuccess={(data) => { }}
                             onAttendanceLogged={addNewAttendance}
                         />
                     </View>

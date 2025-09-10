@@ -145,7 +145,6 @@ export const setupUserWithCourse = async (
 
         return { ok: true, value: user };
     } catch (error) {
-        console.error("Error setting up user:", error);
         return { ok: false, error: "Failed to setup user with course" };
     }
 };
@@ -175,7 +174,6 @@ export const getUserWithCourses = async () => {
             })),
         };
     } catch (error) {
-        console.error("Error loading user:", error);
         throw error;
     }
 };

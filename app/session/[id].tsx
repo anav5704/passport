@@ -32,7 +32,7 @@ export default function SessionDetailScreen() {
                 setAttendanceData(attendance)
 
             } catch (error) {
-                console.error('Error loading session data:', error)
+                // Handle error silently
             } finally {
                 setIsLoading(false)
             }
