@@ -7,6 +7,7 @@ import {
 } from "@database/schema";
 import { eq, and, desc, sql } from "drizzle-orm";
 import { db } from "@database";
+import { Result } from "@/utils/types";
 
 // User queries
 export const getAllUsers = async () => {
@@ -33,7 +34,10 @@ export const updateUserName = async (userId: number, name: string) => {
 };
 
 // Course queries
-export const createCourse = async (code: string, leaderId: number) => {
+export const createCourse = async (
+    code: string,
+    leaderId: number
+): Promise<Result<any>> => {
     // Check if course code already exists
     const existingCourse = await db
         .select()
@@ -42,7 +46,7 @@ export const createCourse = async (code: string, leaderId: number) => {
         .limit(1);
 
     if (existingCourse.length > 0) {
-        throw new Error("Course code already exists");
+        return { ok: false, error: "Course code already exists" };
     }
 
     const [course] = await db
@@ -52,7 +56,7 @@ export const createCourse = async (code: string, leaderId: number) => {
             leaderId,
         })
         .returning();
-    return course;
+    return { ok: true, value: course };
 };
 
 export const getCoursesByLeaderId = async (leaderId: number) => {
@@ -119,21 +123,30 @@ export const getMostRecentlyAccessedCourse = async (leaderId: number) => {
 };
 
 // Combined queries
-export const setupUserWithCourse = async (name: string, courseCode: string) => {
+export const setupUserWithCourse = async (
+    name: string,
+    courseCode: string
+): Promise<Result<any>> => {
     try {
         // Insert user
         const user = await createUser(name);
 
         // Insert course
-        const course = await createCourse(courseCode, user.id);
+        const courseResult = await createCourse(courseCode, user.id);
+
+        if (!courseResult.ok) {
+            return courseResult;
+        }
+
+        const course = courseResult.value;
 
         // Set the course as accessed (since it's the user's first course)
         await updateCourseLastAccessed(course.id);
 
-        return user;
+        return { ok: true, value: user };
     } catch (error) {
         console.error("Error setting up user:", error);
-        throw error;
+        return { ok: false, error: "Failed to setup user with course" };
     }
 };
 
@@ -168,7 +181,10 @@ export const getUserWithCourses = async () => {
 };
 
 // Session queries
-export const createSession = async (courseId: number, timestamp?: string) => {
+export const createSession = async (
+    courseId: number,
+    timestamp?: string
+): Promise<Result<any>> => {
     const sessionTimestamp = timestamp || new Date().toISOString();
     const sessionDate = new Date(sessionTimestamp);
 
@@ -193,9 +209,10 @@ export const createSession = async (courseId: number, timestamp?: string) => {
         .limit(1);
 
     if (existingSession.length > 0) {
-        throw new Error(
-            "A session already exists for this course in the current hour"
-        );
+        return {
+            ok: false,
+            error: "Session already in progress",
+        };
     }
 
     const [session] = await db
@@ -205,7 +222,7 @@ export const createSession = async (courseId: number, timestamp?: string) => {
             timestamp: sessionTimestamp,
         })
         .returning();
-    return session;
+    return { ok: true, value: session };
 };
 
 export const getSessionsForCourse = async (courseId: number) => {
@@ -257,7 +274,10 @@ export const updateStudentSignature = async (
 };
 
 // Attendance queries
-export const logAttendance = async (studentId: number, sessionId: number) => {
+export const logAttendance = async (
+    studentId: number,
+    sessionId: number
+): Promise<Result<any>> => {
     // Check if attendance already exists for this student and session
     const existingAttendance = await db
         .select()
@@ -271,7 +291,7 @@ export const logAttendance = async (studentId: number, sessionId: number) => {
         .limit(1);
 
     if (existingAttendance.length > 0) {
-        throw new Error("Attendance already taken");
+        return { ok: false, error: "Attendance already taken" };
     }
 
     const [attendanceRecord] = await db
@@ -281,7 +301,7 @@ export const logAttendance = async (studentId: number, sessionId: number) => {
             sessionId,
         })
         .returning();
-    return attendanceRecord;
+    return { ok: true, value: attendanceRecord };
 };
 
 export const getAttendanceByStudentAndSession = async (

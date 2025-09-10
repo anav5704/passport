@@ -24,15 +24,16 @@ export default function CreateCourseScreen() {
 
         setIsLoading(true)
         try {
-            await addCourse(courseCode.trim())
+            const result = await addCourse(courseCode.trim())
+            if (!result.ok) {
+                ToastAndroid.show(result.error, ToastAndroid.LONG)
+                return
+            }
             ToastAndroid.show('Course created successfully', ToastAndroid.SHORT)
             router.back()
         } catch (error) {
-            if (error instanceof Error && error.message === 'Course code already exists') {
-                ToastAndroid.show('Course code already exists.', ToastAndroid.LONG)
-            } else {
-                ToastAndroid.show('Failed to create course', ToastAndroid.SHORT)
-            }
+            console.error('Unexpected error creating course:', error)
+            ToastAndroid.show('Failed to create course', ToastAndroid.SHORT)
         } finally {
             setIsLoading(false)
         }

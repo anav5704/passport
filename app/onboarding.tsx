@@ -54,7 +54,12 @@ export default function OnboardingScreen() {
 
         try {
             // Setup user with course
-            await setupUserWithCourse(leaderName, courseCode)
+            const result = await setupUserWithCourse(leaderName, courseCode)
+
+            if (!result.ok) {
+                ToastAndroid.show(result.error, ToastAndroid.SHORT)
+                return
+            }
 
             // Refresh user context
             await refreshUser()

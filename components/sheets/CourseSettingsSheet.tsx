@@ -37,27 +37,26 @@ const CourseSettingsSheet = forwardRef<BaseSheetRef, {}>((props, ref) => {
 
     const handleStartSession = async () => {
         if (currentCourse) {
-            try {
-                // Create a new session for the current course
-                const newSession = await createSession()
+            // Create a new session for the current course
+            const result = await createSession()
 
-                // Close the sheet
-                closeAllSheets()
-
-                // SessionContext will automatically refresh the data
-            } catch (error) {
-                console.error('Error creating session:', error)
+            if (!result.ok) {
+                console.log('Error creating session:', result.error)
 
                 // Show toast notification for the error
-                const errorMessage = error instanceof Error ? error.message : 'Failed to create session'
                 if (Platform.OS === 'android') {
-                    ToastAndroid.show("Session already in progress", ToastAndroid.LONG)
-                    closeAllSheets()
+                    ToastAndroid.show(result.error, ToastAndroid.LONG)
                 } else {
                     // For iOS or other platforms, you could use Alert.alert or another notification method
-                    console.log('Session creation error:', errorMessage)
+                    console.log('Session creation error:', result.error)
                 }
+                return
             }
+
+            // Close the sheet
+            closeAllSheets()
+
+            // SessionContext will automatically refresh the data
         }
     }
 

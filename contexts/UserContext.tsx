@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { getUserWithCourses, updateUserName as updateUserNameQuery } from '@database/queries'
+import { Result } from '@/utils/types'
 
 interface User {
     id: number
@@ -12,7 +13,7 @@ interface UserContextType {
     isLoading: boolean
     isOnboardingComplete: boolean
     refreshUser: () => Promise<void>
-    updateUserName: (name: string) => Promise<void>
+    updateUserName: (name: string) => Promise<Result<any>>
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined)
@@ -45,17 +46,18 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         }
     }
 
-    const updateUserName = async (name: string) => {
+    const updateUserName = async (name: string): Promise<Result<any>> => {
         if (!user) {
-            throw new Error('No user found')
+            return { ok: false, error: 'No user found' }
         }
 
         try {
             await updateUserNameQuery(user.id, name)
             await refreshUser() // Refresh to get updated data
+            return { ok: true, value: undefined }
         } catch (error) {
             console.error('Error updating user name:', error)
-            throw error
+            return { ok: false, error: 'Failed to update user name' }
         }
     }
 

@@ -1,12 +1,13 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { useCourse } from '@/contexts/CourseContext'
 import { getSessionsWithAttendanceCount, getAttendanceHistoryForCourse, createSession as createSessionQuery } from '@/database/queries'
+import { Result } from '@/utils/types'
 
 interface SessionContextType {
     sessions: any[]
     sessionHistory: any[]
     isLoading: boolean
-    createSession: () => Promise<any>
+    createSession: () => Promise<Result<any>>
     refreshSessions: () => Promise<void>
 }
 
@@ -48,19 +49,19 @@ export function SessionProvider({ children }: SessionProviderProps) {
         }
     }
 
-    const createSession = async () => {
+    const createSession = async (): Promise<Result<any>> => {
         if (!currentCourse) {
-            throw new Error('No current course selected')
+            return { ok: false, error: 'No current course selected' }
         }
 
-        try {
-            const newSession = await createSessionQuery(currentCourse.id)
-            await refreshSessions() // Refresh data after creating session
-            return newSession
-        } catch (error) {
-            console.error('Error creating session:', error)
-            throw error
+        const result = await createSessionQuery(currentCourse.id)
+
+        if (!result.ok) {
+            return result
         }
+
+        await refreshSessions() // Refresh data after creating session
+        return result
     }
 
     useEffect(() => {

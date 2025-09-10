@@ -179,81 +179,119 @@ export default function BarcodeScanner({ isActive, onScanSuccess, onAttendanceLo
         setLastScanTime(now)
         setIsProcessing(true)
 
-        try {
-            if (scanState === ScanState.STUDENT_ID) {
-                await handleStudentIdScan(data)
-            } else if (scanState === ScanState.SIGNATURE) {
-                await handleSignatureScan(data)
-            }
-        } catch (error) {
-            console.error('Scanning error:', error)
-            resetScanner()
-        } finally {
-            setIsProcessing(false)
+        if (scanState === ScanState.STUDENT_ID) {
+            await handleStudentIdScan(data)
+        } else if (scanState === ScanState.SIGNATURE) {
+            await handleSignatureScan(data)
         }
+
+        setIsProcessing(false)
     }
 
     const handleStudentIdScan = async (studentId: string) => {
-        try {
-            // Additional check to prevent duplicate processing
-            if (isProcessing) {
-                return
-            }
+        // Additional check to prevent duplicate processing
+        if (isProcessing) {
+            return
+        }
 
-            // Vibrate once for student ID scan
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+        // Vibrate once for student ID scan
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
 
-            const existingStudent = await getStudentByStudentId(studentId)
+        const existingStudent = await getStudentByStudentId(studentId)
 
-            if (existingStudent) {
-                // Student exists, wait for signature
-                setCurrentStudent(existingStudent)
-                setScanState(ScanState.SIGNATURE)
-            } else {
-                // Student doesn't exist, create new student and wait for signature
-                setCurrentStudent({ studentId, isNew: true })
-                setScanState(ScanState.SIGNATURE)
-            }
-        } catch (error) {
-            throw error
+        if (existingStudent) {
+            // Student exists, wait for signature
+            setCurrentStudent(existingStudent)
+            setScanState(ScanState.SIGNATURE)
+        } else {
+            // Student doesn't exist, create new student and wait for signature
+            setCurrentStudent({ studentId, isNew: true })
+            setScanState(ScanState.SIGNATURE)
         }
     }
 
     const handleSignatureScan = async (signature: string) => {
-        try {
-            if (!currentStudent) {
-                throw new Error('No student selected')
-            }
+        if (!currentStudent) {
+            console.error('No student selected for signature scan')
+            resetScanner()
+            return
+        }
 
-            // Additional check to prevent duplicate processing
-            if (isProcessing) {
+        // Additional check to prevent duplicate processing
+        if (isProcessing) {
+            return
+        }
+
+        if (currentStudent.isNew) {
+            // Create new student with signature
+            const newStudent = await createStudent(currentStudent.studentId, signature)
+
+            // Get the active session for attendance logging
+            const activeSession = await getActiveSession()
+            console.log('Logging attendance for new student:', newStudent.id, 'with session:', activeSession)
+
+            if (activeSession) {
+                const attendanceResult = await logAttendance(newStudent.id, activeSession.id)
+
+                if (attendanceResult.ok) {
+                    console.log('Attendance logged successfully')
+                    // Call callback to update UI
+                    onAttendanceLogged?.(currentStudent.studentId)
+                    // Vibrate once for successful signature scan
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+                } else {
+                    console.log('Error logging attendance:', attendanceResult.error)
+                    // Show toast for duplicate attendance
+                    if (Platform.OS === 'android') {
+                        ToastAndroid.show(attendanceResult.error, ToastAndroid.LONG)
+                    } else {
+                        console.log('Attendance error:', attendanceResult.error)
+                    }
+                    // Vibrate for error
+                    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
+                    // Reset scanner after error
+                    resetScanner()
+                    return
+                }
+            } else {
+                console.warn('No active session found, skipping attendance logging')
+                // Show toast notification
+                const toastMessage = 'No sessions in progress'
+                if (Platform.OS === 'android') {
+                    ToastAndroid.show(toastMessage, ToastAndroid.LONG)
+                } else {
+                    console.log('No active sessions:', toastMessage)
+                }
+                // Vibrate for error
+                Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
+                // Reset scanner after error
+                resetScanner()
                 return
             }
 
-            if (currentStudent.isNew) {
-                // Create new student with signature
-                const newStudent = await createStudent(currentStudent.studentId, signature)
-
+        } else {
+            // Check if signature matches existing student
+            if (currentStudent.studentSignature === signature) {
                 // Get the active session for attendance logging
                 const activeSession = await getActiveSession()
-                console.log('Logging attendance for new student:', newStudent.id, 'with session:', activeSession)
+                console.log('Logging attendance for existing student:', currentStudent.id, 'with session:', activeSession)
 
                 if (activeSession) {
-                    try {
-                        await logAttendance(newStudent.id, activeSession.id)
+                    const attendanceResult = await logAttendance(currentStudent.id, activeSession.id)
+
+                    if (attendanceResult.ok) {
                         console.log('Attendance logged successfully')
                         // Call callback to update UI
                         onAttendanceLogged?.(currentStudent.studentId)
                         // Vibrate once for successful signature scan
                         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
-                    } catch (attendanceError: any) {
-                        console.error('Error logging attendance:', attendanceError)
+                    } else {
+                        console.log('Error logging attendance:', attendanceResult.error)
                         // Show toast for duplicate attendance
-                        const errorMessage = attendanceError.message || 'Error logging attendance'
                         if (Platform.OS === 'android') {
-                            ToastAndroid.show(errorMessage, ToastAndroid.LONG)
+                            ToastAndroid.show(attendanceResult.error, ToastAndroid.LONG)
                         } else {
-                            console.log('Attendance error:', errorMessage)
+                            console.log('Attendance error:', attendanceResult.error)
                         }
                         // Vibrate for error
                         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
@@ -278,71 +316,22 @@ export default function BarcodeScanner({ isActive, onScanSuccess, onAttendanceLo
                 }
 
             } else {
-                // Check if signature matches existing student
-                if (currentStudent.studentSignature === signature) {
-                    // Get the active session for attendance logging
-                    const activeSession = await getActiveSession()
-                    console.log('Logging attendance for existing student:', currentStudent.id, 'with session:', activeSession)
-
-                    if (activeSession) {
-                        try {
-                            await logAttendance(currentStudent.id, activeSession.id)
-                            console.log('Attendance logged successfully')
-                            // Call callback to update UI
-                            onAttendanceLogged?.(currentStudent.studentId)
-                            // Vibrate once for successful signature scan
-                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
-                        } catch (attendanceError: any) {
-                            console.error('Error logging attendance:', attendanceError)
-                            // Show toast for duplicate attendance
-                            const errorMessage = attendanceError.message || 'Error logging attendance'
-                            if (Platform.OS === 'android') {
-                                ToastAndroid.show(errorMessage, ToastAndroid.LONG)
-                            } else {
-                                console.log('Attendance error:', errorMessage)
-                            }
-                            // Vibrate for error
-                            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
-                            // Reset scanner after error
-                            resetScanner()
-                            return
-                        }
-                    } else {
-                        console.warn('No active session found, skipping attendance logging')
-                        // Show toast notification
-                        const toastMessage = 'No sessions in progress'
-                        if (Platform.OS === 'android') {
-                            ToastAndroid.show(toastMessage, ToastAndroid.LONG)
-                        } else {
-                            console.log('No active sessions:', toastMessage)
-                        }
-                        // Vibrate for error
-                        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
-                        // Reset scanner after error
-                        resetScanner()
-                        return
-                    }
-
+                // Signature mismatch - show error toast and vibrate
+                const toastMessage = 'Signature does not match'
+                if (Platform.OS === 'android') {
+                    ToastAndroid.show(toastMessage, ToastAndroid.LONG)
                 } else {
-                    // Signature mismatch - show error toast and vibrate
-                    const toastMessage = 'Signature does not match'
-                    if (Platform.OS === 'android') {
-                        ToastAndroid.show(toastMessage, ToastAndroid.LONG)
-                    } else {
-                        console.log('Signature mismatch:', toastMessage)
-                    }
-                    // Longer vibration for failure (signature mismatch)
-                    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
-                    // Reset scanner after signature mismatch
-                    resetScanner()
-                    return
+                    console.log('Signature mismatch:', toastMessage)
                 }
+                // Longer vibration for failure (signature mismatch)
+                Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
+                // Reset scanner after signature mismatch
+                resetScanner()
+                return
             }
-
-            resetScanner()
-        } catch (error) {
-            throw error
         }
+
+        resetScanner()
     }
 
     const resetScanner = () => {

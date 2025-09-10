@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { useUser } from './UserContext'
 import { createCourse, updateCourse, deleteCourse, updateCourseLastAccessed, getMostRecentlyAccessedCourse } from '@/database/queries'
+import { Result } from '@/utils/types'
 
 interface Course {
     id: number
@@ -12,7 +13,7 @@ interface CourseContextType {
     currentCourse: Course | null
     setCourse: (course: Course) => Promise<void>
     clearCourse: () => void
-    addCourse: (code: string) => Promise<void>
+    addCourse: (code: string) => Promise<Result<any>>
     updateCourseCode: (courseId: number, code: string) => Promise<void>
     removeCourse: (courseId: number) => Promise<void>
 }
@@ -65,9 +66,15 @@ export function CourseProvider({ children }: CourseProviderProps) {
         setCurrentCourse(null)
     }
 
-    const addCourse = async (code: string) => {
-        if (!user) throw new Error('No user found')
-        const newCourse = await createCourse(code, user.id)
+    const addCourse = async (code: string): Promise<Result<any>> => {
+        if (!user) return { ok: false, error: 'No user found' }
+        const result = await createCourse(code, user.id)
+
+        if (!result.ok) {
+            return result
+        }
+
+        const newCourse = result.value
         await updateCourseLastAccessed(newCourse.id)
         await refreshUser()
 
@@ -78,6 +85,7 @@ export function CourseProvider({ children }: CourseProviderProps) {
             lastAccessed: new Date().toISOString()
         }
         setCurrentCourse(courseWithData)
+        return { ok: true, value: newCourse }
     }
 
     const updateCourseCode = async (courseId: number, code: string) => {
