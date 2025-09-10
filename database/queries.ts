@@ -324,3 +324,16 @@ export const getAttendanceHistoryForCourse = async (courseId: number) => {
         .where(eq(sessions.courseId, courseId))
         .orderBy(sessions.timestamp);
 };
+
+export const getAttendanceForSession = async (sessionId: number) => {
+    return await db
+        .select({
+            studentId: students.studentId,
+            sessionTimestamp: sessions.timestamp,
+        })
+        .from(attendance)
+        .innerJoin(students, eq(attendance.studentId, students.id))
+        .innerJoin(sessions, eq(attendance.sessionId, sessions.id))
+        .where(eq(attendance.sessionId, sessionId))
+        .orderBy(students.studentId);
+};

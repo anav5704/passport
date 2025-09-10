@@ -1,7 +1,8 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { FlashList } from '@shopify/flash-list'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { router } from 'expo-router'
 import { useUser } from '@/contexts/UserContext'
 import { useCourse } from '@/contexts/CourseContext'
 import { useSheet } from '@/contexts/SheetContext'
@@ -92,6 +93,10 @@ export default function Index() {
         openCourseSettings()
     }
 
+    const handleSessionPress = (sessionId: number) => {
+        router.push(`/session/${sessionId}`)
+    }
+
     if (isLoading || !user) {
         return (
             <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -131,18 +136,22 @@ export default function Index() {
                                 renderItem={({ item, index }) => {
                                     const isActive = isSessionActive(item.timestamp)
                                     return (
-                                        <View style={[
-                                            styles.attendanceItem,
-                                            { backgroundColor: colors.surface, borderColor: colors.border },
-                                            index < sessions.length - 1 && styles.attendanceItemWithMargin
-                                        ]}>
+                                        <TouchableOpacity
+                                            style={[
+                                                styles.attendanceItem,
+                                                { backgroundColor: colors.surface, borderColor: colors.border },
+                                                index < sessions.length - 1 && styles.attendanceItemWithMargin
+                                            ]}
+                                            onPress={() => handleSessionPress(item.id)}
+                                            activeOpacity={0.7}
+                                        >
                                             <Text style={[styles.studentId, { color: colors.text }]}>
                                                 {formatSessionDisplay(item.timestamp)}
                                             </Text>
                                             <Text style={[styles.sessionId, { color: colors.textSecondary }]}>
                                                 {isActive ? 'Session in progress' : 'Session completed'}
                                             </Text>
-                                        </View>
+                                        </TouchableOpacity>
                                     )
                                 }}
                                 contentContainerStyle={{ paddingBottom: insets.bottom }}
