@@ -13,6 +13,7 @@ import BarcodeScanner from '@/components/BarcodeScanner'
 import GeneralSettingsSheet from '@/components/sheets/GeneralSettingsSheet'
 import CourseSwitcherSheet from '@/components/sheets/CourseSwitcherSheet'
 import CourseSettingsSheet from '@/components/sheets/CourseSettingsSheet'
+import SessionHistoryList from '@/components/SessionHistoryList'
 
 export default function Index() {
     const { user, isLoading } = useUser()
@@ -29,53 +30,6 @@ export default function Index() {
         openCourseSettings,
         closeAllSheets
     } = useSheet()
-
-    // Function to format timestamp as "6 Sep, 10.00am"
-    const formatTimestamp = (timestamp: string) => {
-        const date = new Date(timestamp)
-        const day = date.getDate().toString()
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-        const month = months[date.getMonth()]
-        const hours24 = date.getHours()
-        const minutes = date.getMinutes()
-        const ampm = hours24 >= 12 ? 'pm' : 'am'
-        const displayHours = hours24 === 0 ? 12 : (hours24 > 12 ? hours24 - 12 : hours24)
-        const displayMinutes = minutes.toString().padStart(2, '0')
-        return `${day} ${month}, ${displayHours}.${displayMinutes}${ampm}`
-    }
-
-    // Function to check if session is active
-    const isSessionActive = (timestamp: string) => {
-        const sessionTime = new Date(timestamp)
-        const now = new Date()
-
-        // Check if it's the same day
-        const isSameDay = sessionTime.toDateString() === now.toDateString()
-
-        if (!isSameDay) return false
-
-        // Check if current time is within the same hour as session start
-        const sessionHour = sessionTime.getHours()
-        const currentHour = now.getHours()
-
-        return sessionHour === currentHour
-    }
-
-    // Function to format session display: "Mon 23 Jun, 10am"
-    const formatSessionDisplay = (timestamp: string) => {
-        const date = new Date(timestamp)
-        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-        const day = days[date.getDay()]
-        const dayOfMonth = date.getDate()
-        const month = months[date.getMonth()]
-        const hours24 = date.getHours()
-        const ampm = hours24 >= 12 ? 'pm' : 'am'
-        const displayHours = hours24 === 0 ? 12 : (hours24 > 12 ? hours24 - 12 : hours24)
-        return `${day} ${dayOfMonth} ${month}, ${displayHours}${ampm}`
-    }
 
     const addNewAttendance = async (studentId: string) => {
         // Refresh session data to update attendance counts
@@ -130,38 +84,9 @@ export default function Index() {
                 <View style={styles.statsSection}>
                     {currentCourse && sessions.length > 0 && !isLoadingHistory && (
                         <View style={styles.attendanceList}>
-                            <FlashList
-                                data={sessions}
-                                keyExtractor={(item: any, index) => `session-${item.id}-${index}`}
-                                estimatedItemSize={100}
-                                renderItem={({ item, index }) => {
-                                    const isActive = isSessionActive(item.timestamp)
-                                    return (
-                                        <TouchableOpacity
-                                            style={[
-                                                styles.attendanceItem,
-                                                {
-                                                    backgroundColor: colors.surface,
-                                                    borderColor: isActive ? '#009ca3' : colors.border
-                                                },
-                                                index < sessions.length - 1 && styles.attendanceItemWithMargin
-                                            ]}
-                                            onPress={() => handleSessionPress(item.id)}
-                                            activeOpacity={0.7}
-                                        >
-                                            <View style={styles.sessionInfo}>
-                                                <Text style={[styles.studentId, { color: colors.text }]}>
-                                                    {formatSessionDisplay(item.timestamp)}
-                                                </Text>
-                                                <Text style={[styles.attendanceCount, { color: colors.textSecondary }]}>
-                                                    {item.attendanceCount || 0} student{(item.attendanceCount || 0) !== 1 ? 's' : ''} attended
-                                                </Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                    )
-                                }}
-                                contentContainerStyle={{ paddingBottom: insets.bottom }}
-                                showsVerticalScrollIndicator={false}
+                            <SessionHistoryList
+                                sessions={sessions}
+                                onSessionPress={handleSessionPress}
                             />
                         </View>
                     )}
@@ -200,28 +125,5 @@ const styles = StyleSheet.create({
     attendanceList: {
         flex: 1,
         marginTop: 20
-    },
-    attendanceItem: {
-        backgroundColor: '#fff',
-        borderRadius: 8,
-        padding: 16,
-        borderWidth: 1,
-        borderColor: '#f4f4f5',
-    },
-    attendanceItemWithMargin: {
-        marginBottom: 20,
-    },
-    sessionInfo: {
-        flex: 1,
-    },
-    studentId: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: '#333',
-        marginBottom: 5,
-    },
-    attendanceCount: {
-        fontSize: 14,
-        color: '#666',
     },
 })
