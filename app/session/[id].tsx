@@ -6,6 +6,7 @@ import { useTheme } from '@/contexts/ThemeContext'
 import { getSessionById, getAttendanceForSession } from '@/database/queries'
 import Header from '@/components/Header'
 import AttendanceList from '@/components/AttendanceList'
+import { formatSessionTimestamp } from '@/utils/sessionUtils'
 
 export default function SessionDetailScreen() {
     const { id } = useLocalSearchParams<{ id: string }>()
@@ -40,20 +41,6 @@ export default function SessionDetailScreen() {
         loadSessionData()
     }, [id])
 
-    const formatSessionTime = (timestamp: string) => {
-        const date = new Date(timestamp)
-        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-        const day = days[date.getDay()]
-        const dayOfMonth = date.getDate()
-        const month = months[date.getMonth()]
-        const hours24 = date.getHours()
-        const ampm = hours24 >= 12 ? 'pm' : 'am'
-        const displayHours = hours24 === 0 ? 12 : (hours24 > 12 ? hours24 - 12 : hours24)
-        return `${day} ${dayOfMonth} ${month}, ${displayHours}${ampm}`
-    }
-
     if (!session && !isLoading) {
         return (
             <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -75,7 +62,7 @@ export default function SessionDetailScreen() {
     return (
         <View style={[styles.container, { backgroundColor: colors.background }]}>
             <Header
-                title={session ? formatSessionTime(session.timestamp) : "Session Details"}
+                title={session ? formatSessionTimestamp(session.timestamp) : "Session Details"}
                 showBackButton={true}
                 showAvatar={false}
                 showMenu={false}

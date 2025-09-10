@@ -1,6 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { useTheme } from '@/contexts/ThemeContext'
+import { formatSessionTimestamp } from '@/utils/sessionUtils'
 
 interface SessionHistoryItemProps {
     session: any
@@ -28,20 +29,6 @@ export default function SessionHistoryItem({ session, index, totalItems, onPress
         return sessionHour === currentHour
     }
 
-    const formatSessionDisplay = (timestamp: string) => {
-        const date = new Date(timestamp)
-        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-        const day = days[date.getDay()]
-        const dayOfMonth = date.getDate()
-        const month = months[date.getMonth()]
-        const hours24 = date.getHours()
-        const ampm = hours24 >= 12 ? 'pm' : 'am'
-        const displayHours = hours24 === 0 ? 12 : (hours24 > 12 ? hours24 - 12 : hours24)
-        return `${day} ${dayOfMonth} ${month}, ${displayHours}${ampm}`
-    }
-
     const isActive = isSessionActive(session.timestamp)
 
     return (
@@ -59,7 +46,7 @@ export default function SessionHistoryItem({ session, index, totalItems, onPress
         >
             <View style={styles.sessionInfo}>
                 <Text style={[styles.studentId, { color: colors.text }]}>
-                    {formatSessionDisplay(session.timestamp)}
+                    {formatSessionTimestamp(session.timestamp)}
                 </Text>
                 <Text style={[styles.attendanceCount, { color: colors.textSecondary }]}>
                     {session.attendanceCount || 0} student{(session.attendanceCount || 0) !== 1 ? 's' : ''} attended
