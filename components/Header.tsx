@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useUser } from '@/contexts/UserContext'
 import { useTheme } from '@/contexts/ThemeContext'
 import { router } from 'expo-router'
+import { COLORS, BORDER_RADIUS, FONT_SIZE, FONT_WEIGHT, SPACING } from '@/utils/designConstants'
 
 interface HeaderProps {
     currentCourse?: { id: number; code: string }
@@ -113,23 +114,23 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingLeft: 20,
-        paddingRight: 20,
-        paddingVertical: 16,
+        paddingLeft: SPACING.xl,
+        paddingRight: SPACING.xl,
+        paddingVertical: SPACING.lg,
         borderBottomWidth: 1,
     },
     avatar: {
         width: 40,
         height: 40,
-        borderRadius: 8,
-        backgroundColor: '#009ca3', // Keep brand color for avatar
+        borderRadius: BORDER_RADIUS.md,
+        backgroundColor: COLORS.primary, // Keep brand color for avatar
         alignItems: 'center',
         justifyContent: 'center',
     },
     avatarText: {
-        color: '#fff', // Keep white text on brand color background
-        fontSize: 18,
-        fontWeight: '600',
+        color: COLORS.white, // Keep white text on brand color background
+        fontSize: FONT_SIZE.lg,
+        fontWeight: FONT_WEIGHT.semibold,
     },
     backButton: {
         width: 40,
@@ -146,34 +147,34 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        paddingHorizontal: 16,
+        paddingHorizontal: SPACING.lg,
     },
     courseTitleText: {
-        fontSize: 14,
-        fontWeight: '600',
-        marginRight: 4,
+        fontSize: FONT_SIZE.sm,
+        fontWeight: FONT_WEIGHT.semibold,
+        marginRight: SPACING.xs,
     },
     dropdownTrigger: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
         alignSelf: 'center',
-        borderRadius: 20,
-        paddingVertical: 8,
-        paddingHorizontal: 12,
+        borderRadius: BORDER_RADIUS.full,
+        paddingVertical: SPACING.sm,
+        paddingHorizontal: SPACING.md,
     },
     dropdownArrow: {
-        marginLeft: 4,
+        marginLeft: SPACING.xs,
     },
     titleContainer: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        paddingHorizontal: 16,
+        paddingHorizontal: SPACING.lg,
     },
     titleText: {
-        fontSize: 18,
-        fontWeight: '600',
+        fontSize: FONT_SIZE.lg,
+        fontWeight: FONT_WEIGHT.semibold,
     },
     menuButton: {
         width: 44,

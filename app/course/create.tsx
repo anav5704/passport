@@ -7,6 +7,7 @@ import { useTheme } from '@/contexts/ThemeContext'
 import Header from '@/components/Header'
 import Button from '@/components/Button'
 import TextInput from '@/components/TextInput'
+import { COLORS, FONT_SIZE, FONT_WEIGHT, SPACING } from '@/utils/designConstants'
 
 export default function CreateCourseScreen() {
     const { addCourse } = useCourse()
@@ -76,22 +77,22 @@ export default function CreateCourseScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: COLORS.white,
     },
     content: {
         flex: 1,
         justifyContent: 'space-between',
-        padding: 20,
+        padding: SPACING.xl,
         paddingBottom: 0
     },
     topSection: {
         // paddingTop: 32,
     },
     label: {
-        fontSize: 16,
-        fontWeight: '500',
-        color: '#333',
-        marginBottom: 12,
+        fontSize: FONT_SIZE.base,
+        fontWeight: FONT_WEIGHT.medium,
+        color: COLORS.textDark,
+        marginBottom: SPACING.md,
     },
     bottomSection: {
         // paddingBottom will be set dynamically using insets.bottom

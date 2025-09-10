@@ -2,6 +2,7 @@ import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { useTheme } from '@/contexts/ThemeContext'
 import { formatSessionTimestamp } from '@/utils/sessionUtils'
+import { COLORS, BORDER_RADIUS, FONT_SIZE, FONT_WEIGHT, SPACING } from '@/utils/designConstants'
 
 interface SessionHistoryItemProps {
     session: any
@@ -37,7 +38,7 @@ export default function SessionHistoryItem({ session, index, totalItems, onPress
                 styles.attendanceItem,
                 {
                     backgroundColor: colors.surface,
-                    borderColor: isActive ? '#009ca3' : colors.border
+                    borderColor: isActive ? COLORS.primary : colors.border
                 },
                 index < totalItems - 1 && styles.attendanceItemWithMargin
             ]}
@@ -58,26 +59,26 @@ export default function SessionHistoryItem({ session, index, totalItems, onPress
 
 const styles = StyleSheet.create({
     attendanceItem: {
-        backgroundColor: '#fff',
-        borderRadius: 8,
-        padding: 16,
+        backgroundColor: COLORS.white,
+        borderRadius: BORDER_RADIUS.md,
+        padding: SPACING.lg,
         borderWidth: 1,
-        borderColor: '#f4f4f5',
+        borderColor: COLORS.borderLight,
     },
     attendanceItemWithMargin: {
-        marginBottom: 20,
+        marginBottom: SPACING.xl,
     },
     sessionInfo: {
         flex: 1,
     },
     studentId: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: '#333',
-        marginBottom: 5,
+        fontSize: FONT_SIZE.base,
+        fontWeight: FONT_WEIGHT.semibold,
+        color: COLORS.textDark,
+        marginBottom: SPACING.xs,
     },
     attendanceCount: {
-        fontSize: 14,
-        color: '#666',
+        fontSize: FONT_SIZE.sm,
+        color: COLORS.textMedium,
     },
 })

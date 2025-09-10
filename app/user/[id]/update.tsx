@@ -7,6 +7,7 @@ import { useTheme } from '@/contexts/ThemeContext'
 import Header from '@/components/Header'
 import Button from '@/components/Button'
 import TextInput from '@/components/TextInput'
+import { FONT_SIZE, FONT_WEIGHT, SPACING } from '@/utils/designConstants'
 
 export default function UpdateUserScreen() {
     const { id } = useLocalSearchParams<{ id: string }>()
@@ -87,16 +88,16 @@ const styles = StyleSheet.create({
     content: {
         flex: 1,
         justifyContent: 'space-between',
-        padding: 20,
+        padding: SPACING.xl,
         paddingBottom: 0
     },
     topSection: {
         // paddingTop: 32,
     },
     label: {
-        fontSize: 16,
-        fontWeight: '500',
-        marginBottom: 12,
+        fontSize: FONT_SIZE.base,
+        fontWeight: FONT_WEIGHT.medium,
+        marginBottom: SPACING.md,
     },
     bottomSection: {
         // paddingBottom will be set dynamically using insets.bottom

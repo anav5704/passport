@@ -1,6 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { useTheme } from '@/contexts/ThemeContext'
+import { COLORS, BORDER_RADIUS, FONT_SIZE, FONT_WEIGHT, SPACING } from '@/utils/designConstants'
 
 interface AttendanceItemProps {
     attendance: any
@@ -26,17 +27,17 @@ export default function AttendanceItem({ attendance, index, totalItems }: Attend
 
 const styles = StyleSheet.create({
     attendanceItem: {
-        backgroundColor: '#fff',
-        borderRadius: 8,
-        padding: 16,
+        backgroundColor: COLORS.white,
+        borderRadius: BORDER_RADIUS.md,
+        padding: SPACING.lg,
         borderWidth: 1,
-        borderColor: '#f4f4f5',
+        borderColor: COLORS.borderLight,
     },
     attendanceItemWithMargin: {
-        marginBottom: 20,
+        marginBottom: SPACING.xl,
     },
     studentId: {
-        fontSize: 16,
-        fontWeight: '500',
+        fontSize: FONT_SIZE.base,
+        fontWeight: FONT_WEIGHT.medium,
     },
 })

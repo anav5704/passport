@@ -1,5 +1,6 @@
 import React from 'react'
 import { Pressable, Text, StyleSheet } from 'react-native'
+import { COLORS, BORDER_RADIUS, FONT_SIZE, FONT_WEIGHT, SPACING, OPACITY } from '@/utils/designConstants'
 
 interface ButtonProps {
     title: string
@@ -44,28 +45,28 @@ export default function Button({
 
 const styles = StyleSheet.create({
     button: {
-        borderRadius: 9999, // This creates the pill shape (rounded-full equivalent)
-        paddingVertical: 16,
+        borderRadius: BORDER_RADIUS.full,
+        paddingVertical: SPACING.lg,
         alignItems: 'center',
         justifyContent: 'center',
     },
     primaryButton: {
-        backgroundColor: '#009ca3',
+        backgroundColor: COLORS.primary,
     },
     dangerButton: {
-        backgroundColor: '#F43F5E',
+        backgroundColor: COLORS.danger,
     },
     buttonDisabled: {
-        opacity: 0.6,
+        opacity: OPACITY.disabled,
     },
     buttonText: {
-        fontSize: 16,
-        fontWeight: '600',
+        fontSize: FONT_SIZE.base,
+        fontWeight: FONT_WEIGHT.semibold,
     },
     primaryButtonText: {
-        color: '#fff',
+        color: COLORS.white,
     },
     dangerButtonText: {
-        color: '#fff',
+        color: COLORS.white,
     },
 })
