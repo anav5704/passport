@@ -41,7 +41,11 @@ export default function UpdateCourseScreen() {
 
         setIsLoading(true)
         try {
-            await updateCourseCode(parseInt(id), courseCode.trim())
+            const result = await updateCourseCode(parseInt(id), courseCode.trim())
+            if (!result.ok) {
+                ToastAndroid.show(result.error, ToastAndroid.LONG)
+                return
+            }
             ToastAndroid.show('Course updated successfully', ToastAndroid.SHORT)
             router.back()
         } catch (error) {

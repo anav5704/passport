@@ -14,7 +14,7 @@ interface CourseContextType {
     setCourse: (course: Course) => Promise<void>
     clearCourse: () => void
     addCourse: (code: string) => Promise<Result<any>>
-    updateCourseCode: (courseId: number, code: string) => Promise<void>
+    updateCourseCode: (courseId: number, code: string) => Promise<Result<any>>
     removeCourse: (courseId: number) => Promise<void>
 }
 
@@ -87,13 +87,19 @@ export function CourseProvider({ children }: CourseProviderProps) {
         return { ok: true, value: newCourse }
     }
 
-    const updateCourseCode = async (courseId: number, code: string) => {
-        await updateCourse(courseId, code)
+    const updateCourseCode = async (courseId: number, code: string): Promise<Result<any>> => {
+        const result = await updateCourse(courseId, code)
+
+        if (!result.ok) {
+            return result
+        }
+
         await refreshUser()
         // Update current course if it's the one being updated
         if (currentCourse?.id === courseId) {
             setCurrentCourse({ ...currentCourse, code })
         }
+        return { ok: true, value: result.value }
     }
 
     const removeCourse = async (courseId: number) => {

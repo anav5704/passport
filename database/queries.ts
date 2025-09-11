@@ -66,13 +66,32 @@ export const getCoursesByLeaderId = async (leaderId: number) => {
         .where(eq(courses.leaderId, leaderId));
 };
 
-export const updateCourse = async (courseId: number, code: string) => {
+export const updateCourse = async (
+    courseId: number,
+    code: string
+): Promise<Result<any>> => {
+    // Check if course code already exists (excluding the current course)
+    const existingCourse = await db
+        .select()
+        .from(courses)
+        .where(
+            and(
+                eq(courses.code, code.trim()),
+                sql`${courses.id} != ${courseId}`
+            )
+        )
+        .limit(1);
+
+    if (existingCourse.length > 0) {
+        return { ok: false, error: "Course code already exists" };
+    }
+
     const [updatedCourse] = await db
         .update(courses)
         .set({ code: code.trim() })
         .where(eq(courses.id, courseId))
         .returning();
-    return updatedCourse;
+    return { ok: true, value: updatedCourse };
 };
 
 export const deleteCourse = async (courseId: number) => {
