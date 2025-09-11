@@ -1,63 +1,64 @@
 {
-    "expo": {
-        "name": "PASSport",
-        "slug": "PASSport",
-        "version": "1.0.0",
-        "orientation": "portrait",
-        "icon": "./assets/icon.png",
-        "userInterfaceStyle": "automatic",
-        "newArchEnabled": true,
-        "scheme": "passport",
-        "splash": {
-            "image": "./assets/splash-icon.png",
-            "resizeMode": "contain",
-            "backgroundColor": "#ffffff"
-        },
-        "android": {
-            "adaptiveIcon": {
-                "foregroundImage": "./assets/icons/adaptive-icon.png",
-                "backgroundColor": "#ffffff"
-            },
-            "edgeToEdgeEnabled": true,
-            "package": "com.anav5704.passport"
-        },
-        "plugins": [
-            "expo-sqlite",
-            "expo-router",
-            [
-                "expo-splash-screen",
-                {
-                    "backgroundColor": "#ffffff",
-                    "image": "./assets/icons/splash-icon-light.png",
-                    "dark": {
-                        "image": "./assets/icons/splash-icon-dark.png",
-                        "backgroundColor": "#000000"
-                    },
-                    "imageWidth": 200
-                }
-            ],
-            [
-                "expo-camera",
-                {
-                    "cameraPermission": "Allow PASSport to access your camera to scan student IDs."
-                }
-            ],
-            [
-                "react-native-edge-to-edge",
-                {
-                    "android": {
-                        "enforceNavigationBarContrast": false
-                    }
-                }
-            ],
-            "expo-font"
-        ],
-        "extra": {
-            "router": {},
-            "eas": {
-                "projectId": "3bd805d2-6685-407e-88e6-28cf0edcbaa7"
-            }
-        },
-        "owner": "anav5704"
-    }
+  "expo": {
+    "name": "PASSport",
+    "slug": "PASSport",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "scheme": "passport",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icons/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "com.anav5704.passport"
+    },
+    "plugins": [
+      "expo-sqlite",
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#ffffff",
+          "image": "./assets/icons/splash-icon-light.png",
+          "dark": {
+            "image": "./assets/icons/splash-icon-dark.png",
+            "backgroundColor": "#000000"
+          },
+          "imageWidth": 200
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow PASSport to access your camera to scan student IDs."
+        }
+      ],
+      [
+        "react-native-edge-to-edge",
+        {
+          "android": {
+            "enforceNavigationBarContrast": false
+          }
+        }
+      ],
+      "expo-font",
+      "expo-asset"
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "3bd805d2-6685-407e-88e6-28cf0edcbaa7"
+      }
+    },
+    "owner": "anav5704"
+  }
 }
