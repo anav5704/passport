@@ -14,31 +14,13 @@ interface SessionHistoryItemProps {
 export default function SessionHistoryItem({ session, index, totalItems, onPress }: SessionHistoryItemProps) {
     const { colors } = useTheme()
 
-    const isSessionActive = (timestamp: string) => {
-        const sessionTime = new Date(timestamp)
-        const now = new Date()
-
-        // Check if it's the same day
-        const isSameDay = sessionTime.toDateString() === now.toDateString()
-
-        if (!isSameDay) return false
-
-        // Check if current time is within the same hour as session start
-        const sessionHour = sessionTime.getHours()
-        const currentHour = now.getHours()
-
-        return sessionHour === currentHour
-    }
-
-    const isActive = isSessionActive(session.timestamp)
-
     return (
         <TouchableOpacity
             style={[
                 styles.attendanceItem,
                 {
                     backgroundColor: colors.surface,
-                    borderColor: isActive ? COLORS.primary : colors.border
+                    borderColor: colors.border
                 },
                 index < totalItems - 1 && styles.attendanceItemWithMargin
             ]}
