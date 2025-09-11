@@ -105,9 +105,9 @@ export default function AttendanceExportScreen() {
         worksheet['!cols'] = [
             { wch: 15 },  // Date column
             { wch: 15 },  // Time column
-            { wch: 30 },  // Student ID column
+            { wch: 15 },  // Student ID column
             { wch: 15 },  // Course column
-            { wch: 15 }   // Leader column
+            { wch: 30 }   // Leader column
         ]
 
         // Get admin password from environment variables

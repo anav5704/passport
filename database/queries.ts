@@ -205,11 +205,13 @@ export const createSession = async (
     const sessionTimestamp = timestamp || new Date().toISOString();
     const sessionDate = new Date(sessionTimestamp);
 
-    // Get the start and end of the current hour
-    const hourStart = new Date(sessionDate);
-    hourStart.setMinutes(0, 0, 0);
+    // Round timestamp to the current hour (e.g., 10:15 becomes 10:00)
+    const roundedTimestamp = new Date(sessionDate);
+    roundedTimestamp.setMinutes(0, 0, 0);
 
-    const hourEnd = new Date(sessionDate);
+    // Get the start and end of the current hour for checking duplicates
+    const hourStart = new Date(roundedTimestamp);
+    const hourEnd = new Date(roundedTimestamp);
     hourEnd.setMinutes(59, 59, 999);
 
     // Check if a session already exists for this course in the same hour
@@ -236,7 +238,7 @@ export const createSession = async (
         .insert(sessions)
         .values({
             courseId,
-            timestamp: sessionTimestamp,
+            timestamp: roundedTimestamp.toISOString(),
         })
         .returning();
     return { ok: true, value: session };
